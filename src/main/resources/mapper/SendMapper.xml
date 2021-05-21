@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.OrderSendMapper">
+
+    <resultMap id="selectProduct" type="com.soft.web.vo.OrderSendVO">
+        <id property="orderId" column="order_id"></id>
+        <result property="createTime" column="create_time"></result>
+        <result property="receiveName" column="receive_name"></result>
+        <result property="receiveTelPhone" column="receive_telphone"></result>
+        <result property="address" column="address"></result>
+        <result property="systemComments" column="system_comments"></result>
+        <result property="expressName" column="express_name"></result>
+        <result property="expressNo" column="express_no"></result>
+        <collection property="products" ofType="com.soft.web.entity.OrderDetail" column="orderId">
+            <result property="productName" column="product_name"></result>
+            <result property="productQuantity" column="product_quantity"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectByOrderId" resultType="com.soft.web.entity.Order">
+        select * from fa_order where order_id=#{orderId}
+    </select>
+
+    <select id="selectOrderVOS" resultType="com.soft.web.vo.OrderSendVO" resultMap="selectProduct">
+        select o.create_time,o.order_id,o.receive_name,o.receive_telphone,
+        o.address,p.product_name,p.product_quantity,o.system_comments,o.express_name,
+        o.express_no from fa_order o left join fa_order_detail p
+        on o.order_id=p.order_id
+        <where>
+            <if test="key != null and key != ''">
+                AND (o.order_id=#{key} or true_name=#{key})
+            </if>
+            <if test="OrderBegin != null and OrderBegin != ''">
+                AND date_format(o.create_time,'%y%m%d') &gt;= date_format(#{OrderBegin},'%y%m%d')
+            </if>
+            <if test="OrderEnd != null and OrderEnd != ''">
+                AND date_format(o.create_time,'%y%m%d') &lt;= date_format(#{OrderEnd},'%y%m%d')
+            </if>
+            <if test="PayBegin != null and PayBegin != ''">
+                AND date_format(o.pay_time,'%y%m%d') &gt;= date_format(#{PayBegin},'%y%m%d')
+            </if>
+            <if test="PayEnd != null and PayEnd != ''">
+                AND date_format(o.pay_time,'%y%m%d') &lt;= date_format(#{PayEnd},'%y%m%d')
+            </if>
+            <if test="SendBegin != null and SendBegin != ''">
+                AND date_format(o.send_time,'%y%m%d') &gt;= date_format(#{SendBegin},'%y%m%d')
+            </if>
+            <if test="SendEnd != null and SendEnd != ''">
+                AND date_format(o.send_time,'%y%m%d') &lt;= date_format(#{SendEnd},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectGlobal" resultType="com.soft.web.entity.Global">
+        select from_name,from_tel,from_address from fa_global where id=1
+    </select>
+    
+    <update id="updateStatus" parameterType="com.soft.web.vo.OrderSendVO">
+        update fa_order set trade_status=3,express_name=#{expressName},express_no=#{expressNo},express_id=#{expressId} where order_id=#{orderId}
+    </update>
+    
+    <select id="selectExpress" resultType="com.soft.web.entity.Express">
+        select * from fa_express where express_name=#{expressName}
+    </select>
+</mapper>

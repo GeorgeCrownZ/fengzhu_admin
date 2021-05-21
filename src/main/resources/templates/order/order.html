@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+	<th:block th:include="include :: header('订单管理')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-center">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="form1">
+					<div class="select-list">
+						<ul>
+							<li>
+								搜索订单：<input type="text" name="key"/>
+							</li>
+							<li>
+							付款状态：
+							<select name="payStatus" class="form-control" th:with="kv=${@order.getPayStatusList()}" style="display: inline-block">
+								<option th:each="t : ${kv}" th:text="${t.value}" th:value="${t.key}"></option>
+							</select>
+							</li>
+
+							<li>
+								订单状态：
+								<select name="tradeStatus" class="form-control" th:with="kv=${@order.getTradeStatusList()}" style="display: inline-block">
+									<option th:each="t : ${kv}" th:text="${t.value}" th:value="${t.key}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>下单时间： </label>
+								<input type="text" class="time-input" id="OrderBegin" placeholder="开始时间" name="OrderBegin"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="OrderEnd" placeholder="结束时间" name="OrderEnd"/>
+							</li>
+							<li class="select-time">
+								<label>支付时间： </label>
+								<input type="text" class="time-input" id="PayBegin" placeholder="开始时间" name="PayBegin"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="PayEnd" placeholder="结束时间" name="PayEnd"/>
+							</li>
+							<li class="select-time">
+								<label>发货时间： </label>
+								<input type="text" class="time-input" id="SendBegin" placeholder="开始时间" name="SendBegin"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="SendEnd" placeholder="结束时间" name="SendEnd"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+<!--			<div class="btn-group-sm" id="toolbar" role="group">-->
+<!--				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="order:add">-->
+<!--					<i class="fa fa-plus"></i> 新增-->
+<!--				</a>-->
+<!--				<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="order:edit">-->
+<!--					<i class="fa fa-edit"></i> 修改-->
+<!--				</a>-->
+<!--				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="order:remove">-->
+<!--					<i class="fa fa-remove"></i> 删除-->
+<!--				</a>-->
+<!--			</div>-->
+
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+	var prefix = ctx + "order";
+	var oInit = new Object();
+
+	$(function() {
+		queryOrderList();
+		// detailList();
+	});
+
+	function queryOrderList() {
+		var options = {
+			url: prefix + "/list",
+			// createUrl: prefix + "/add",
+			// updateUrl: prefix + "/edit/{id}",
+			// removeUrl: prefix + "/remove",
+			// exportUrl: prefix + "/export",
+			// importUrl: prefix + "/importData",
+			// importTemplateUrl: prefix + "/importTemplate",
+			sortName: "create_time",
+			sortOrder: "desc",
+			modalName: "订单",
+			detailView: true,
+			onExpandRow: function(index, row, $detail){
+				oInit.InitSubTable(index, row, $detail);
+			},
+			columns: [{
+				checkbox: true
+			},
+				{
+					field: 'id',
+					title: 'id',
+					visible: false
+				},
+				{
+					field: 'orderId',
+					title: '订单号',
+					sortable: true
+				},
+				{
+					field: 'createTime',
+					title: '下单时间'
+				},
+				{
+					field: 'payAmount',
+					title: '实收金额'
+				},
+				{
+					field: 'trueName',
+					title: '用户名'
+				},
+				{
+					field: 'payStatus',
+					title: '支付状态',
+					formatter: function (value, row, index) {
+						var payway='';
+						var paystatus='';
+						if (row.payWay == 1) {
+							payway='微信';
+						}
+						else if (row.payWay == 2) {
+							payway='支付宝';
+						}
+						else if (row.payWay == 3) {
+							payway='储值卡';
+						}
+						else if (row.payWay == 4) {
+							payway='购物积分';
+						}
+						if(row.payStatus==0) {
+							paystatus='未付款';
+						}
+
+						else if(row.payStatus==1) {
+							paystatus='已付款';
+						}
+						if(row.payStatus==0){
+							return paystatus;
+						}
+						else{
+							return payway+'，'+paystatus;
+						}
+					}
+				},
+				{
+					field: 'tradeStatus',
+					title: '订单状态',
+					formatter: function (value, row, index) {
+						var tradeStatus = '';
+						if (row.tradeStatus == 1) {
+							tradeStatus='已取消';
+						}
+						else if (row.tradeStatus == 2) {
+							tradeStatus='待发货';
+						}
+						else if (row.tradeStatus == 3) {
+							tradeStatus='待收货';
+						}
+						else if (row.tradeStatus == 4) {
+							tradeStatus='已签收';
+						}
+						return tradeStatus;
+					}
+				},
+				{
+					title: '操作',
+					align: "left",
+					formatter: function(value, row, index) {
+						var actions = [];
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="detail(\'' + row.id + '\')"><i class="fa fa-edit"></i>订单详情</a> ');
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="rememory(\'' + row.id + '\')"><i class="fa fa-edit"></i>备注</a> ');
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="editaddress(\'' + row.id + '\')"><i class="fa fa-edit"></i>修改收货地址</a> ');
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="express(\'' + row.id + '\')"><i class="fa fa-edit"></i>发货</a> ');
+						actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="allbackpay(\'' + row.id + '\')"><i class="fa fa-edit"></i>整单退款</a> ');
+						if(row.tradeStatus == 1) {
+							actions.push('<a class="btn btn-warning btn-xs " href="javascript:void(0)" disabled="true"><i class="fa fa-edit"></i>取消</a> ');
+						} else {
+							actions.push('<a class="btn btn-warning btn-xs " href="javascript:void(0)" onclick="ordercancel(\'' + row.id + '\')"><i class="fa fa-edit"></i>取消</a> ');
+						}
+						return actions.join('');
+					}
+				}
+				]
+		};
+		$.table.init(options);
+	}
+
+
+		oInit.InitSubTable = function (index, row, $detail) {
+			detailId = row.id+"SubTable";
+			var cur_table = $detail.html('<div style="width: 96%;margin: auto;"><table id="'+detailId+'" class="underling-table" data-toolbar="#toolbar" data-show-footer="false" data-mobile-responsive="true"></table></div>').find('table');
+			$(cur_table).bootstrapTable({
+				url: prefix+"/orderdetail",               // 请求后台的URL（*）
+				method: 'post',                                     // 请求方式（*）
+				async: false,
+				contentType: "application/x-www-form-urlencoded",   // 必须的
+				cache: false,                                       // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+				pagination: true,                                  // 是否显示分页（*）
+				sidePagination: "server",                           // 分页方式：client客户端分页，server服务端分页
+				pageSize: 10,                                       // 每页的记录行数（*）
+				pageList: [10, 50],                                 // 可供选择的每页的行数（*）
+				clickToSelect: true,                                // 是否启用点击选中行
+				queryParams: function(params) {
+					return {
+						pageSize:       params.limit,
+						pageNum:        params.offset / params.limit + 1,
+						searchValue:    params.search,
+						orderByColumn:  params.sort,
+						isAsc:          params.order,
+						pid: row.id
+					}
+				},
+				idField: 'id',
+				uniqueId: 'id',
+				columns:[
+					// {
+					// 	field: 'ck',
+					// 	checkbox: true
+					// },
+					{
+						field: 'productIcon',
+						title: '图片',
+						formatter: function (value, row, index) {
+							return '<img src="'+row.productIcon+'" style="height: 50px;width:50px;">';
+						}
+					},
+					{
+						field: 'productName',
+						title: '商品名'
+					},
+					{
+						field: 'productQuantity',
+						title: '数量'
+					},
+					{
+						field: 'productPrice',
+						title: '单价'
+					},
+					{
+						field: 'specialofferprice',
+						title: '实收金额'
+					},
+					{
+						title: '操作',
+						align: "left",
+						formatter: function(value, row, index) {
+							var actions = [];
+							actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="backpay(\'' + row.id + '\')"><i class="fa fa-edit"></i>退款</a> ');
+							return actions.join('');
+						}
+					}
+				],
+				onLoadError: function () {
+					layer.msg("数据加载失败！");
+				}
+			});
+
+	}
+
+	function express(id) {
+		$.modal.open("发货" , prefix + "/express/"+id);
+	}
+
+	function rememory(id) {
+		$.modal.open("备注" , prefix + "/rememory/"+id);
+	}
+
+	function editaddress(id) {
+		$.modal.open("收货地址" , prefix + "/address/"+id);
+	}
+
+	function disable(id) {
+		$.modal.confirm("确认要禁用吗？", function() {
+			$.operate.post(prefix + "/enable", { "id": id, "status": 0 });
+		})
+	}
+
+	function enable(id) {
+		$.modal.confirm("确认要启用吗？", function() {
+			$.operate.post(prefix + "/enable", { "id": id, "status": 1 });
+		})
+	}
+
+	function setEmployee(id){
+		$.modal.confirm("确认要设为员工吗？", function() {
+			$.operate.post(prefix + "/employee", { "id": id, "status": 1 });
+		})
+	}
+
+	function noEmployee(id){
+		$.modal.confirm("确认要设为员工吗？", function() {
+			$.operate.post(prefix + "/employee", { "id": id, "status": 0 });
+		})
+	}
+
+	function detail(id) {
+		$.modal.openFull("详情" , prefix + "/detail/"+id)
+	}
+
+	function ordercancel(id) {
+		$.modal.confirm("确认要取消订单吗？", function() {
+			$.ajax({
+				url: ctx + "orderdetail/cancelorder/"+id,
+				type: "post",
+				success: function(result) {
+					$.modal.alertSuccess(result.msg);
+					$("#bootstrap-table").bootstrapTable('refresh');
+				}
+			})
+		})
+	}
+</script>
+</body>
+</html>

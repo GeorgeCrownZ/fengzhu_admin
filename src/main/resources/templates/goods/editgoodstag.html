@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改标签')" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+
+    <div class="w_w82">
+        <div class="stock m_t10 of">
+            <form class="form-horizontal m" id="form1" th:object="${spec}">
+                <input id="id" name="id" type="hidden" th:field="*{id}"/>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left">名称：</span>
+                    <div class="w_w82 pull-left">
+                        <input class="form-control pull-left" type="text" placeholder="请输入名称" th:field="*{specName}" name="specName" id="specName" required />
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<style>
+    .w_w82{ width: 82%;}
+    .w_98{width:98%; margin: 0 auto;padding:20px 10px;}
+    .of{ overflow: hidden;}
+    .m_t5{margin-top:5px;}
+    .m_b5{margin-bottom:5px;}
+    .m_b10{margin-bottom:10px;}
+    .b_b{border-bottom:1px solid #ddd;}
+    .h_30{height:30px;line-height: 30px;font-size:14px;margin: 0 0 10px 0;}
+    .w_w40{width:90px;margin-right:10px;margin-top:10px;}
+    .stock input[type="text"]{width:100%;height:35px;}
+    .stock div{margin-bottom:10px;}
+    .m_t10{margin-top:10px;}
+    .m_r10{margin-right:10px;}
+    .pull-left{ float: left;}
+    .stock img{width:40px; height: 40px;}
+    .stock .w_imgbox img{width:65px;height:65px;margin:0 15px 15px 0; float: left;}
+    /*商品订单中的弹窗样式*/
+    .f_red{color: #D9001B;margin:0 3px;}
+    .w_city select{width: 31%;margin-right:2%; float: left;}
+
+    .idcardpic{
+        height: 100px;
+        width: 150px;
+    }
+    .clickpic{
+        position: relative;
+    }
+    .inputpic{
+        opacity:0;
+        filter:alpha(opacity=0);
+        height: 100px;
+        width: 180px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        cursor:pointer;
+    }
+</style>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<script type="text/javascript">
+    var prefix = ctx + "goodstag";
+    $("#form1").validate({
+        rules:{
+            onkeyup: false,
+        },
+        messages: {
+
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/editgoodstag", $('#form1').serialize());
+        }
+    }
+</script>
+</body>
+</html>

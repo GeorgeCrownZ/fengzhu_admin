@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('设为员工')" />
+
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<div class="row">
+		<form class="form-horizontal m" id="form1">
+		<input id="id" name="id" type="hidden" th:value="${userId}" />
+		<div class="form-group">
+			<label class="col-sm-2 control-label is-required">店铺列表：</label>
+			<div class="col-sm-10">
+				<select name="shopId" class="form-control" th:with="kv=${@shop.getlist(true)}" style="display: inline-block">
+					<option th:each="t : ${kv}" th:text="${t.shopName}" th:value="${t.id}"></option>
+				</select>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+	
+	<th:block th:include="include :: footer" />
+	<script>
+		var prefix = ctx + "member";
+		$("#form1").validate({
+			rules:{
+				onkeyup: false,
+			},
+			messages: {
+
+			},
+			focusCleanup: true
+		});
+
+		function submitHandler() {
+			if ($.validate.form()) {
+				$.operate.save(prefix + "/employeesave", $('#form1').serialize());
+			}
+		}
+	</script>
+</body>
+</html>

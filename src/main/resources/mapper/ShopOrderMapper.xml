@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.ShopOrderMapper">
+
+    <select id="selectAllShops" resultType="Shop">
+        select * from fa_shop
+    </select>
+
+    <select id="selectOrders" resultType="com.soft.web.vo.ShopOrderVO" parameterType="ShopOrderQueryParam">
+        select * from fa_order
+        <where>
+            <if test="searchKey != null and searchKey != ''">
+                and (id=#{searchKey} or order_id=#{searchKey})
+            </if>
+            <if test="shopId != null and shopId != ''">
+                and shop_id = #{shopId}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+</mapper>

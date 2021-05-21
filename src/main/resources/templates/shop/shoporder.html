@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:include="include :: header('订单管理')" />
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-center">
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="form1">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                搜索订单：<input type="text" name="searchKey"/>
+                            </li>
+
+                            <li>
+                                门店信息：
+                                <select name="shopId" class="form-control" style="display: inline-block">
+                                    <option>---请选择---</option>
+                                    <option th:each="shop,shops:${shops}" onblur="queryOrderList()" th:value="${shop.id}" th:text="${shop.shopName}"> </option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+                                <label>下单时间： </label>
+                                <input type="text" class="time-input" id="OrderBegin" placeholder="开始时间" name="OrderBegin"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="OrderEnd" placeholder="结束时间" name="OrderEnd"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+
+
+
+                    </div>
+                    <div style="width: 100%;overflow: hidden;">
+                        <ul style="padding:0;margin-top: 10px;">
+                            <li style="list-style: none;">
+                                <div class="btn-group-sm" >
+                                    <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ordersend:export">
+                                        <i class="fa fa-download"></i> 导出
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+    var prefix = ctx + "shoporder";
+
+    $(function() {
+        queryOrderList();
+        // detailList();
+    });
+
+    function queryOrderList() {
+        var options = {
+            url: prefix + "/orderlist",
+            //createUrl: prefix + "/add",
+            //updateUrl: prefix + "/edit/{id}",
+            //removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            //importUrl: prefix + "/importData",
+            //importTemplateUrl: prefix + "/importTemplate",
+            sortName: "create_time",
+            sortOrder: "desc",
+            modalName: "订单",
+            columns: [
+                {
+                    field: 'id',
+                    title: 'id'
+                },
+                {
+                    field: 'shopName',
+                    title: '门店名称'
+                },
+                {
+                    field: 'orderId',
+                    title: '订单编号',
+                    sortable: true
+                },
+                {
+                    field: 'payAmount',
+                    title: '订单金额'
+                },
+                {
+                    field: 'userAccount',
+                    title: '用户账号'
+                },
+                {
+                    field: 'payStatus',
+                    title: '支付状态',
+                    formatter: function (value, row, index) {
+                        if(row.payWay == 1) {
+                            return "微信";
+                        } else if(row.payWay == 2) {
+                            return "支付宝"
+                        }
+                    }
+                },
+                {
+                    field: 'payTime',
+                    title: '付款时间'
+                }
+            ]
+        };
+        $.table.init(options);
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+html {
+	height:100%
+}
+body.signin {
+	height:auto;
+	background:url(../img/login-background.jpg) no-repeat center fixed;
+	-webkit-background-size:cover;
+	-moz-background-size:cover;
+	-o-background-size:cover;
+	background-size:cover;
+	color:rgba(255,255,255,.95)
+}
+.f_3{color:#333;}
+	.login{width: 350px; height:390px;padding:40px 40px; margin: 0 auto; background: #fff;box-shadow:0px 0px 15px #808080; border-radius: 10px;
+	top:50%;left: 50%; margin:-190px 0 0 -190px; position: absolute;}
+	.logo img{ width:100%; margin:15px auto 15px auto;}
+	.logo div{font-size:22px;color: #108DE9;margin-bottom:15px;}
+	.input_box{height:45px; border: 1px solid #ddd; margin: 0 auto 20px auto;border-radius:5px;}
+	.input_box img{width:20px;height:20px; float: left; margin:12px 13px;}
+	.input_box input{width: 70%; margin:5px auto; height:35px;line-height: 35px;float: left;font-size:14px;border: none;}
+	.line{height: 15px; background: #007AFF; position: absolute;top:0;left: 0;z-index: 9999;width: 100%;border-radius: 10px 10px 0 0;}
+	.login_btn{margin-top:50rpx;}
+	.bg_img{ height:440px;margin-top:240px;}
+	.bg_img img{width: 100%;}
+	.uname {
+		background:#fff url('../img/name.png') no-repeat 95% center;
+		color:#333
+	}
+	 .pword {
+		background:#fff url('../img/password.png') no-repeat 95% center;
+		color:#333
+	}

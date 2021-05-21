@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商品图片列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" >
+                <i class="fa fa-plus"></i> 新增
+            </a>
+            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="role:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="role:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var prefix = ctx + "goodstag";
+
+    /*$(function() {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({ initClosed: panehHidden, west__size: 185 });
+        queryList();
+
+    });*/
+
+    $(function() {
+        var options = {
+            url: prefix + "/goodstagList",
+            createUrl: prefix + "/addgoodstag",
+            updateUrl: prefix + "/editgoodstag/{id}",
+            removeUrl: prefix + "/removegoodstag",
+            // exportUrl: prefix + "/export",
+            // importUrl: prefix + "/importData",
+            // importTemplateUrl: prefix + "/importTemplate",
+            sortName: "id",
+            sortOrder: "asc",
+            modalName: "标签",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '标签id',
+                    visible: false
+                },
+                {
+                    field: 'specName',
+                    title: '标签名称',
+                    sortable: true
+                },
+                {
+                    field: 'count',
+                    title: '绑定商品数量'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function (value, row, index) {
+                        if (row.status != 1) {
+                            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="spec_enable(\'' + row.id + '\')"></i> ';
+                        } else {
+                            return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="spec_disable(\'' + row.id + '\')"></i> ';
+                        }
+                    }
+                },
+                {
+                    title: '操作',
+                    align: "left",
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-trash"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+    function spec_disable(specId) {
+        $.modal.confirm("确认要下架该标签信息吗？", function() {
+            $.operate.post(prefix + "/editstatus", {"id": specId, "status": 0});
+        })
+    }
+
+    function spec_enable(specId) {
+        $.modal.confirm("确认要添加该标签信息吗？", function() {
+            $.operate.post(prefix + "/editstatus", {"id": specId, "status": 1});
+        })
+    }
+
+</script>
+</body>
+</html>

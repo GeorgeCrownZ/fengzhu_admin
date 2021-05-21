@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+	<th:block th:include="include :: header('用户列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-center">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="user-form">
+					<input type="hidden" id="deptId" name="deptId">
+					<input type="hidden" id="parentId" name="parentId">
+					<div class="select-list">
+						<ul>
+							<li>
+								搜索用户：<input type="text" name="searchkey"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="user:add">
+					<i class="fa fa-plus"></i> 新增
+				</a>
+				<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="user:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="user:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-success" onclick="usersay()" shiro:hasPermission="user:say">
+					<i class="fa fa-plus"></i> 用户评论
+				</a>
+				<a class="btn btn-success" onclick="userorders()" shiro:hasPermission="user:say">
+					<i class="fa fa-bank"></i> 用户订单
+				</a>
+			</div>
+
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+
+	var prefix = ctx + "member";
+
+	let channel_arr = [];
+
+	$(function() {
+		queryUserList();
+	});
+
+	function queryUserList() {
+		var options = {
+			url: prefix + "/list",
+			createUrl: prefix + "/add",
+			updateUrl: prefix + "/edit/{id}",
+			removeUrl: prefix + "/remove",
+			// exportUrl: prefix + "/export",
+			// importUrl: prefix + "/importData",
+			// importTemplateUrl: prefix + "/importTemplate",
+			sortName: "add_time",
+			sortOrder: "desc",
+			modalName: "用户",
+			columns: [{
+				checkbox: true
+			},
+				{
+					field: 'id',
+					title: '用户ID',
+					sortable: true
+				},
+				{
+					field: 'userAccount',
+					title: '用户账号',
+					sortable: true
+				},
+				{
+					field: 'userNick',
+					title: '用户昵称'
+				},
+				{
+					field: 'trueName',
+					title: '真实姓名'
+				},
+				{
+					field: 'mobileNumber',
+					title: '电话',
+				},
+				{
+					field: 'selfScore',
+					title: '消费金额'
+				},
+				{
+					field: 'ordercount',
+					title: '订单数量'
+				},
+				{
+					field: 'userState',
+					title: '启用状态',
+					formatter: function (value, row, index) {
+						if (row.userState != 1) {
+							return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+						} else {
+							return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+						}
+					}
+				},
+				{
+					field: 'shopName',
+					title: '是否员工',
+					formatter: function (value, row, index) {
+						if (row.isEmployee != 1) {
+							return '<span class="badge badge-danger">否</span> ';
+						} else {
+							return '<span class="badge badge-primary">是</span> ';
+						}
+					}
+				},
+				{
+					field: 'shopName',
+					title: '店铺名称',
+					formatter: function (value, row, index) {
+						if (row.isEmployee == 1) {
+							return row.shopName;
+						}
+					}
+				},
+				{
+					field: 'shopId',
+					title: '店铺id',
+					visible: false,
+					formatter: function (value, row, index) {
+						if (row.isEmployee == 1) {
+							return row.shopId;
+						}
+					}
+				},
+				{
+					title: '操作',
+					align: "left",
+					formatter: function(value, row, index) {
+						var actions = [];
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="employee(\'' + row.id + '\')"><i class="fa fa-edit"></i>设为员工</a> ');
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="toaddress(\'' + row.id + '\')"><i class="fa fa-shopping-bag"></i>收货地址</a> ');
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="detail(\'' + row.id + '\')"><i class="fa fa-edit"></i>详情</a> ');
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+						actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-trash"></i>删除</a>');
+						return actions.join('');
+					}
+				}
+				]
+		};
+		$.table.init(options);
+	}
+
+	function disable(id) {
+		$.modal.confirm("确认要禁用吗？", function() {
+			$.operate.post(prefix + "/enable", { "id": id, "status": 0 });
+		})
+	}
+
+	function enable(id) {
+		$.modal.confirm("确认要启用吗？", function() {
+			$.operate.post(prefix + "/enable", { "id": id, "status": 1 });
+		})
+	}
+
+	function setEmployee(id){
+		$.modal.confirm("确认要设为员工吗？", function() {
+			$.operate.post(prefix + "/employee", { "id": id, "status": 1 });
+		})
+	}
+
+	function noEmployee(id){
+		$.modal.confirm("确认要设为员工吗？", function() {
+			$.operate.post(prefix + "/employee", { "id": id, "status": 0 });
+		})
+	}
+
+	function detail(id) {
+		$.modal.open("详情" , prefix + "/detail/"+id);
+	}
+
+	function channel(channelId) {
+		$.modal.open("店铺信息" , prefix + "/channel/"+channelId);
+	}
+
+	function toaddress(userId) {
+		$.modal.open("收货地址" , prefix + "/toaddress/"+userId);
+	}
+
+	function usersay() {
+		var selectarray = $('#bootstrap-table').bootstrapTable('getSelections');
+		if (selectarray.length != 1) {
+			layer.msg('请选择一条记录！');
+			return;
+		}
+		var selectUserId = selectarray[0].id;
+		$.modal.open("用户评论" , prefix + "/tomembersay/"+selectUserId);
+	}
+
+	function employee(userId) {
+		$.modal.open("设为员工" , prefix + "/employee/"+userId);
+	}
+
+	function userorders() {
+		var selectarray = $('#bootstrap-table').bootstrapTable('getSelections');
+		if (selectarray.length != 1) {
+			layer.msg('请选择一条记录！');
+			return;
+		}
+		var selectUserId = selectarray[0].id;
+		$.modal.openFull("用户订单" , prefix + "/userorders/"+selectUserId);
+	}
+</script>
+</body>
+</html>

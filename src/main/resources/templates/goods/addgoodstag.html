@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增标签')" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form1">
+        <div class="w_500">
+            <div class="stock m_t10 of">
+                <div class="of">
+                    <span class="w_w40 text-right pull-left">标签名称：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入名称" name="specName" id="specName" required />
+                </div>
+            </div>
+        </div>
+        <style>
+            .w_500{width:98%; margin: 0 auto;padding:20px 10px;}
+            .of{ overflow: hidden;}
+            .m_t5{margin-top:5px;}
+            .m_b5{margin-bottom:5px;}
+            .m_b10{margin-bottom:10px;}
+            .b_b{border-bottom:1px solid #ddd;}
+            .h_30{height:30px;line-height: 30px;font-size:14px;margin: 0 0 10px 0;}
+            .w_w40{width:80px;margin-right:10px;margin-top:10px;}
+            .stock input{width:80%;height:35px;}
+            .stock div{margin-bottom:10px;}
+            .m_t10{margin-top:10px;}
+            .m_r10{margin-right:10px;}
+            .pull-left{ float: left;}
+        </style>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<script type="text/javascript">
+    var prefix = ctx + "goodstag";
+    $("#form1").validate({
+        rules:{
+            onkeyup: false,
+        },
+        messages: {
+
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            // add();
+            $.operate.save(prefix + "/addgoodstag", $('#form1').serialize());
+        }
+    }
+
+    // function add() {
+    // 	var productName = $("input[name='productName']").val();
+    // 	var price = $("input[name='price']").val();
+    // 	var specialofferprice = $("input[name='specialofferprice']").val();
+    // 	var currentInventory = $("input[name='currentInventory']").val();
+    // 	var salenum2 = $("input[name='salenum2']").val();
+    // 	var indexno = $("input[name='indexno']").val();
+    //
+    // 	$.ajax({
+    // 		cache : true,
+    // 		type : "POST",
+    // 		url : prefix + "/addsave",
+    // 		data : {
+    // 			"productName": productName,
+    // 			"price": price,
+    // 			"specialofferprice": specialofferprice,
+    // 			"currentInventory": currentInventory,
+    // 			"salenum2": salenum2,
+    // 			"indexno": indexno
+    // 		},
+    // 		async : false,
+    // 		error : function(request) {
+    // 			$.modal.alertError("系统错误");
+    // 		},
+    // 		success : function(data) {
+    // 			$.operate.successCallback(data);
+    // 		}
+    // 	});
+    // }
+</script>
+</body>
+</html>

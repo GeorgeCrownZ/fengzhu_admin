@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:include="include :: header('用户订单')" />
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-center">
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+
+    var prefix = ctx + "order";
+
+    $(function() {
+        queryAddressList();
+    });
+
+    function queryAddressList() {
+        let userId = '[[${userId}]]';
+        var options = {
+            url: prefix + "/userorders/"+userId,
+            //createUrl: prefix + "/add",
+            //updateUrl: prefix + "/edit/{id}",
+            //removeUrl: prefix + "/remove",
+            // exportUrl: prefix + "/export",
+            // importUrl: prefix + "/importData",
+            // importTemplateUrl: prefix + "/importTemplate",
+            sortName: "createTime",
+            sortOrder: "desc",
+            modalName: "订单时间",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'productId',
+                    title: '商品ID',
+                    visible: false
+                },
+                {
+                    field: 'userId',
+                    title: '用户ID',
+                    visible: false
+                },
+                {
+                    field: 'orderId',
+                    title: '订单ID',
+                },
+                {
+                    field: 'createTime',
+                    title: '订单时间'
+                },
+                {
+                    field: 'trueName',
+                    title: '真实姓名'
+                },
+                {
+                    field: 'productIcon',
+                    title: '商品图片',
+                },
+                {
+                    field: 'productName',
+                    title: '商品名称'
+                },
+                {
+                    field: 'productQuantity',
+                    title: '商品数量'
+                },
+                {
+                    field: 'productPrice',
+                    title: '商品价格'
+                },
+                {
+                    field: '优惠价',
+                    title: 'specialofferprice'
+                },
+                {
+                    field: 'payStatus',
+                    title: '支付状态',
+                    formatter: function (value, row, index) {
+                        if(row.payStatus==1) {
+                            return '未付款'
+                        }
+                        if(row.payStatus==2) {
+                            return '已付款';
+                        }
+                    }
+                },
+                {
+                    field: 'payWay',
+                    title: '支付类型',
+                    formatter: function (value, row, index) {
+                        if(row.payWay==1) {
+                            return '微信'
+                        }
+                        if(row.payWay==2) {
+                            return '支付宝';
+                        }
+                    }
+                },
+                {
+                    field: 'tradeStatus',
+                    title: '订单状态',
+                    formatter: function (value, row, index) {
+                        switch (row.tradeStatus) {
+                            case 2:
+                                return '待发货';
+                            case 3:
+                                return '待收货';
+                            case 4:
+                                return '已签收';
+                            default:
+                                return '已取消';
+                        }
+                        /*if (row.tradeStatus == 1) {
+                            return '已取消';
+                        }
+                        if (row.tradeStatus == 2) {
+                            return '待发货';
+                        }
+                        if (row.tradeStatus == 3) {
+                            return '已取消';
+                        }
+                        if (row.tradeStatus == 4) {
+                            return '已取消';
+                        }
+                    }*/
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+    }
+</script>
+</body>
+</html>

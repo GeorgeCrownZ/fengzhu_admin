@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+	<th:block th:include="include :: header('修改备注')" />
+</head>
+<body class="white-bg">
+
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form1" method="post">
+		<input id="id" name="id" type="hidden" th:value="${id}"/>
+		<div class="row">
+			<div class="form-group">
+				<label class="col-sm-12 control-label" style="text-align:left !important;margin-bottom: 15px;">备注信息：</label>
+				<div class="col-sm-12">
+					<textarea rows="26" placeholder="请输入备注信息" style="resize: none;" class="form-control pull-left" type="text" id="systemComments" name="systemComments" autocomplete="off">[[${systemComments}]]</textarea>
+				</div>
+			</div>
+		</div>
+
+
+	</form>
+</div>
+
+<th:block th:include="include :: footer" />
+<script type="text/javascript">
+	var prefix = ctx + "order";
+	$("#form1").validate({
+		rules:{
+			onkeyup: false,
+		},
+		messages: {
+
+		},
+		focusCleanup: true
+	});
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/rememorysave", $('#form1').serialize());
+		}
+	}
+</script>
+
+</body>
+</html>

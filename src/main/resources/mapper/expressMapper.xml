@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.ExpressMapper">
+
+    <delete id="deleteSpecByIds" parameterType="java.lang.Long">
+        delete from fa_express where id in
+        <foreach collection="expressList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAllExpress" resultType="com.soft.web.entity.Express">
+        select * from fa_express
+        <where>
+            <if test="searchkey != null and searchkey != ''">
+                AND express_name like CONCAT('%', #{searchkey} ,'%') or express_code like CONCAT('%', #{searchkey} ,'%');
+            </if>
+        </where>
+    </select>
+</mapper>
+

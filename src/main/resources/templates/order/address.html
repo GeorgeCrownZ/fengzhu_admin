@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+	<th:block th:include="include :: header('修改收件人')" />
+</head>
+<body class="white-bg">
+
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form1" method="post" th:object="${order}">
+		<input id="id" name="id" type="hidden" th:field="*{id}"/>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-12">
+					收件人姓名：
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-12">
+					<input class="form-control pull-left" type="text" id="receiveName" name="receiveName" placeholder="请输入收件人姓名" th:field="*{receiveName}" autocomplete="off" required/>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-12">
+					收货人电话：
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-12">
+					<input class="form-control pull-left" type="text" id="receiveTelphone" name="receiveTelphone" placeholder="请输入收货人电话" th:field="*{receiveTelphone}" autocomplete="off" required/>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-12">
+					收获地址：
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-12">
+					<textarea rows="15" style="resize: none;" class="form-control pull-left" type="text" id="address" name="address" placeholder="请输入收获地址" th:field="*{address}" autocomplete="off" required></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<th:block th:include="include :: footer" />
+<script type="text/javascript">
+	var prefix = ctx + "order";
+	$("#form1").validate({
+		rules:{
+			onkeyup: false,
+		},
+		messages: {
+
+		},
+		focusCleanup: true
+	});
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/addresssave", $('#form1').serialize());
+		}
+	}
+</script>
+
+</body>
+</html>

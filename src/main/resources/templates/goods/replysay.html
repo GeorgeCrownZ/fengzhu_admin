@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('反馈回复')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form1" >
+			<input id="treeId" name="id" type="hidden" th:value="${id}" />
+			<div class="form-group">
+				<label class="control-label">回复内容：</label>
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" type="text" name="content" id="content" required style="width: 100%;height: 500px;"></textarea>
+
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	 <script>
+        var prefix = ctx + "goods";
+		$("#form1").validate({
+			rules:{
+				onkeyup: false,
+			},
+			messages: {
+
+			},
+			focusCleanup: true
+		});
+		function submitHandler() {
+			if ($.validate.form()) {
+				$.operate.save(prefix + "/replysaysave", $('#form1').serialize());
+			}
+		}
+    </script>
+</body>
+</html>

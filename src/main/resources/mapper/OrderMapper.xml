@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.OrderMapper">
+    <select id="orderlist" resultType="com.soft.web.vo.OrderVO">
+        select o.id,o.order_id,o.create_time,o.true_name,o.pay_status,o.pay_way,o.trade_status,o.pay_amount
+        from fa_order o
+        where 1=1
+        <if test="key != null and key != ''">
+            AND (order_id=#{key} or true_name=#{key})
+        </if>
+        <if test="payStatus != null and payStatus != ''">
+            AND pay_status=#{payStatus}
+        </if>
+        <if test="tradeStatus != null and tradeStatus != ''">
+            AND trade_status=#{tradeStatus}
+        </if>
+        <if test="OrderBegin != null and OrderBegin != ''">
+            AND date_format(o.create_time,'%y%m%d') &gt;= date_format(#{OrderBegin},'%y%m%d')
+        </if>
+        <if test="OrderEnd != null and OrderEnd != ''">
+            AND date_format(o.create_time,'%y%m%d') &lt;= date_format(#{OrderEnd},'%y%m%d')
+        </if>
+        <if test="PayBegin != null and PayBegin != ''">
+            AND date_format(o.pay_time,'%y%m%d') &gt;= date_format(#{PayBegin},'%y%m%d')
+        </if>
+        <if test="PayEnd != null and PayEnd != ''">
+            AND date_format(o.pay_time,'%y%m%d') &lt;= date_format(#{PayEnd},'%y%m%d')
+        </if>
+        <if test="SendBegin != null and SendBegin != ''">
+            AND date_format(o.send_time,'%y%m%d') &gt;= date_format(#{SendBegin},'%y%m%d')
+        </if>
+        <if test="SendEnd != null and SendEnd != ''">
+            AND date_format(o.send_time,'%y%m%d') &lt;= date_format(#{SendEnd},'%y%m%d')
+        </if>
+    </select>
+</mapper>

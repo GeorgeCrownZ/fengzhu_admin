@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改储值卡')" />
+    <th:block th:include="include :: ztree-css" />
+    <th:block th:include="include :: summernote-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form1" enctype="multipart/form-data" method="post" th:object="${card}">
+        <div class="w_500">
+            <div class="stock m_t10 of">
+                <input type="hidden" name="id" th:value="*{id}">
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">排序：</span>
+                    <input class="form-control pull-left" type="number" placeholder="请输入排序" name="sort" id="sort" th:value="*{sort}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">封面图片：</span>
+                    <div class="col-sm-8">
+                        <img id="showpic1" th:src="*{cardPic}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+                        <input type="file" name="cardPict" id="cardPict" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload1(this)" style="width:200px;height:65px;position: absolute;top:0;left:0;z-index: 999;">
+                    </div>
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">风暴商品名称：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入风暴商品名称" name="cardName" id="cardName" th:value="*{cardName}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">价格：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入价格" name="price" id="price" th:value="*{price}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">销量：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入销量" name="saleNum" id="saleNum" th:value="*{saleNum}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">虚拟销量：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入虚拟销量" name="showSaleNum" id="showSaleNum" th:value="*{showSaleNum}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">回馈天数：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入回馈天数" name="day" id="day" th:value="*{day}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">回馈比例：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入回馈比例" name="proportion" id="proportion" th:value="*{proportion}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">违约比例：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入违约比例" name="breakContract" id="breakContract" th:value="*{breakContract}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">积分比例：</span>
+                    <input class="form-control pull-left" type="text" placeholder="请输入积分比例" name="score" id="score" th:value="*{score}" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">商品详情：</span>
+                    <div class="col-sm-10">
+                        <input id="info" name="info" th:field="*{info}" type="hidden">
+                        <div id="editor" class="summernote"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .w_500{width:98%; margin: 0 auto;padding:20px 10px;}
+            .of{ overflow: hidden;}
+            .m_t5{margin-top:5px;}
+            .m_b5{margin-bottom:5px;}
+            .m_b10{margin-bottom:10px;}
+            .b_b{border-bottom:1px solid #ddd;}
+            .h_30{height:30px;line-height: 30px;font-size:14px;margin: 0 0 10px 0;}
+            .w_w40{width:80px;margin-right:10px;margin-top:10px;}
+            .stock input{width:80%;height:35px;}
+            .stock div{margin-bottom:10px;}
+            .m_t10{margin-top:10px;}
+            .m_r10{margin-right:10px;}
+            .pull-left{ float: left;}
+        </style>
+    </form>
+</div>
+<style>
+    .inputpic{
+        opacity:0;
+        filter:alpha(opacity=0);
+        height: 100px;
+        width: 180px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        cursor:pointer;
+    }
+</style>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<th:block th:include="include :: summernote-js" />
+<script type="text/javascript">
+    var prefix = ctx + "card";
+    $("#form1").validate({
+        rules:{
+            onkeyup: false,
+        },
+        messages: {
+
+        },
+        focusCleanup: true
+    });
+
+    $(function() {
+        $('.summernote').summernote({
+            placeholder: '请输入公告内容',
+            height : 192,
+            lang : 'zh-CN',
+            followingToolbar: false,
+            callbacks: {
+                onImageUpload: function (files) {
+                    sendFile(files[0], this);
+                }
+            }
+        });
+        let info = $("#info").val();
+        $('#editor').summernote('code', info);
+    });
+
+    // 上传文件
+    function sendFile(file, obj) {
+        var data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            type: "post",
+            url: prefix + "/upload",
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function(result) {
+                if (result.code == web_status.SUCCESS) {
+                    $(obj).summernote('editor.insertImage', result.url, result.fileName);
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+            },
+            error: function(error) {
+                $.modal.alertWarning("图片上传失败。");
+            }
+        });
+    }
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            let sHTML = $('.summernote').summernote('code');
+            $("#info").val(sHTML);
+            let formData = new FormData($("#form1")[0]);
+            $.ajax({
+                url: prefix +"/updatecard",
+                type: 'post',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success :function(data){
+                    if (typeof callback == "function") {
+                        callback(data);
+                    }
+                    $.operate.successCallback(data);
+                }
+            });
+        }
+    }
+
+    function upload1(obj) {
+        //获取展示图片的区域
+        var webLogoImg = document.getElementById("showpic1");
+
+        //获取文件对象
+        let file = obj.files[0];
+        //获取文件阅读器
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            //给img的src设置图片url
+            webLogoImg.setAttribute("src", this.result);
+        }
+    }
+</script>
+</body>
+</html>

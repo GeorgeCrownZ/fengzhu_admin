@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('联系我们')" />
+    <style>
+
+        /*全局*/
+        .container-div{padding:0;}
+        .search-collapse,.select-table{padding:0 28px;}
+        .f_blue{ color: #0b9bd5;}
+        .m_t10{margin-top:10px;}
+        .m_r10{margin-right: 10px;}
+        .w_title{margin:20px 0;font-size:16px;}
+        #role-form{margin-bottom: 20px; overflow: hidden;}
+        .w_border{border:1px solid #ddd;border-radius: 5px;width: 255px;}
+        .select-list li input{ border: none;}
+        .w_border .btn-rounded{ border-radius:0 5px 5px 0; background: #0b9bd5;margin-top:-1px;}
+        /*商品评论*/
+        .of{ overflow: hidden;}
+        .w_btn{ padding:5px 10px;border-radius:5px;border:1px solid #ddd;margin-top:7px;}
+        .m_r10{margin-right:10px;}
+        .w_ml30{margin-left:30px !important;}
+        .w_plr15{ padding: 0 28px;}
+        .f_of{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    </style>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="btn-group-sm of" id="toolbar" role="group">
+            <form id="role-form">
+                <div class="select-list of">
+                    <ul class="pull-left">
+                        <li class="w_border">
+                            <input type="text" name="searchkey" placeholder="请输入搜索内容"/>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()">&nbsp;查询</a>
+                        </li>
+                        <li>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+
+
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+
+<script th:inline="javascript">
+    var prefix = ctx + "callus";
+    $(function() {
+        var options = {
+            url: prefix + "/alllist",
+            // createUrl: prefix + "/addgoodstag",
+            // updateUrl: prefix + "/editgoodstag/{id}",
+            // removeUrl: prefix + "/removegoodstag",
+            sortName: "add_time",
+            sortOrder: "desc",
+            modalName: "联系我们",
+            detailView: true,
+            onExpandRow: function(index, row, $detail){
+                oInit.InitSubTable(index, row, $detail);
+            },
+            onLoadSuccess:function(data) {
+                $("#bootstrap-table").bootstrapTable('expandAllRows');
+            },
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '用户id',
+                    visible: false
+                },
+                {
+                    field: 'userNick',
+                    title: '用户昵称'
+                },
+                {
+                    field: 'trueName',
+                    title: '用户姓名'
+                },
+                {
+                    field: 'mobileNumber',
+                    title: '联系方式'
+                },
+                {
+                    field: 'saycontent',
+                    title: '内容'
+                },
+                {
+                    field: 'addTime',
+                    title: '添加时间'
+                },
+                {
+                    field: '',
+                    title: '操作',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="replysay(\'' + row.id + '\')"><i class="fa fa-edit"></i>回复</a>');
+                        return actions.join('');
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+
+        var oInit = new Object();
+        oInit.InitSubTable = function (index, row, $detail) {
+            detailId = row.id+"SubTable";
+            var cur_table = $detail.html('');
+            $.ajax({
+                url: prefix +"/backsay",
+                data : {
+                    pid: row.id
+                },
+                type : "post",
+                success:function(data){
+                    console.log(data[0]);
+                    var str=(data.rows[0].saycontent==undefined)?'':data.rows[0].saycontent;
+                    if(str!=''){
+                        str='<div style="margin-left: 60px;">'+'<span style="color:#ff5050;">[回复]：</span>'+str+'</div>';
+                    }
+                    $detail.html(str);
+                }
+                ,error:function(data){
+                    layer.alert('error')
+                }
+            });
+        };
+    });
+
+    function say_ajax(url,sayid,status){
+        $.ajax({
+            url: url,
+            data : {
+                id: sayid,
+                status:status
+            },
+            type : "post",
+            success:function(data){
+                $("#bootstrap-table").bootstrapTable('refresh');
+            }
+            ,error:function(data){
+                layer.alert('error')
+            }
+        });
+    }
+
+    function replysay(sayid){
+        $.modal.open("反馈回复", prefix + "/replysay/"+sayid);
+    }
+</script>
+</body>
+</html>

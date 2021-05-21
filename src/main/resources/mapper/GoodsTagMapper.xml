@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.GoodsTagMapper">
+
+    <select id="selectSpecList" resultType="com.soft.web.entity.Spec">
+        SELECT * FROM fa_spec
+    </select>
+
+    <insert id="addSpec" parameterType="com.soft.web.entity.Spec">
+        INSERT INTO fa_spec(spec_name,status,add_time,update_time) VALUES (#{specName},#{status},#{addTime},#{updateTime})
+    </insert>
+
+    <update id="updateSpec" parameterType="com.soft.web.entity.Spec">
+        UPDATE fa_spec SET spec_name=#{specName},status=#{status},update_time=#{updateTime} WHERE id=#{id}
+    </update>
+
+    <delete id="deleteSpecByIds" parameterType="java.lang.Long">
+        delete from fa_spec where id in
+        <foreach collection="specList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSpecById" parameterType="java.lang.Long" resultType="com.soft.web.entity.Spec">
+        select * from fa_spec where id=#{id}
+    </select>
+
+    <update id="updateStatus">
+        update fa_spec set status=#{status},update_time=#{updateTime} where id=#{id}
+    </update>
+
+    <select id="selectCountBySpecId" resultType="com.soft.web.entity.ProductSpec">
+        select * from fa_product_spec where spec_id=#{id}
+    </select>
+
+</mapper>

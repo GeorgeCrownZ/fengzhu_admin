@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.ProductCategoryMapper">
+    <update id="goodskindshow">
+        update fa_product_category set status=#{status} where id=#{id}
+    </update>
+
+    <select id="productCategoryList" resultType="com.soft.web.entity.ProductCategory">
+        select *,(select count(*) from fa_productinfo where product_category_id = c.id) productcount
+        from fa_product_category c where 1=1
+        <if test="categoryName != null and categoryName != ''">
+            AND category_name like concat('%', #{categoryName}, '%')
+        </if>
+    </select>
+
+    <select id="getall" resultType="com.soft.web.entity.ProductCategory">
+        select * from fa_product_category
+    </select>
+    <select id="getSubCategory" resultType="com.soft.web.entity.ProductCategory">
+        select * from fa_product_category where pid=#{id}
+    </select>
+</mapper>

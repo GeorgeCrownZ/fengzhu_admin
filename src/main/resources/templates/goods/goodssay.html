@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('商品评论')" />
+	<style>
+		
+		/*全局*/
+		.container-div{padding:0;}
+		.search-collapse,.select-table{padding:0 28px;}
+		.f_blue{ color: #0b9bd5;}
+		.m_t10{margin-top:10px;}
+		.m_r10{margin-right: 10px;}
+		.w_title{margin:20px 0;font-size:16px;}
+		#role-form{margin-bottom: 20px; overflow: hidden;}
+		.w_border{border:1px solid #ddd;border-radius: 5px;width: 255px;}
+		.select-list li input{ border: none;}
+		.w_border .btn-rounded{ border-radius:0 5px 5px 0; background: #0b9bd5;margin-top:-1px;}
+		/*商品评论*/
+		.of{ overflow: hidden;}
+		.w_btn{ padding:5px 10px;border-radius:5px;border:1px solid #ddd;margin-top:7px;}
+		.m_r10{margin-right:10px;}
+		.w_ml30{margin-left:30px !important;}
+		.w_plr15{ padding: 0 28px;}
+		.f_of{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+	</style>
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="btn-group-sm of" id="toolbar" role="group">
+				<form id="role-form">
+					<div class="select-list of">
+						<ul class="pull-left">
+							<li class="w_border">
+								<input type="text" name="searchkey" placeholder="请输入搜索内容"/>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()">&nbsp;查询</a>
+							</li>
+							<li>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+
+				</form>
+			</div>
+
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table"></table>
+			</div>
+
+
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+
+	<script th:inline="javascript">
+		var prefix = ctx + "goods";
+		$(function() {
+			var options = {
+				url: prefix + "/saylist",
+				// createUrl: prefix + "/addgoodstag",
+				// updateUrl: prefix + "/editgoodstag/{id}",
+				// removeUrl: prefix + "/removegoodstag",
+				sortName: "add_time",
+				sortOrder: "desc",
+				modalName: "商品评论",
+				detailView: true,
+				onExpandRow: function(index, row, $detail){
+					oInit.InitSubTable(index, row, $detail);
+				},
+				onLoadSuccess:function(data) {
+					$("#bootstrap-table").bootstrapTable('expandAllRows');
+				},
+				columns: [{
+					checkbox: true
+				},
+					{
+						field: 'id',
+						title: 'id',
+						visible: false
+					},
+					{
+						field: 'addTime',
+						title: '评论时间'
+					},
+					{
+						field: 'userName',
+						title: '客户姓名'
+					},
+					{
+						field: 'userPhone',
+						title: '手机号'
+					},
+					{
+						field: 'sayLevel',
+						title: '评价类型',
+						formatter: function (value, row, index) {
+							var str='';
+							if (row.sayLevel==0){
+								str+='<span style="background:#ff5050;padding:3px 5px;border-radius:5px;color:#fff;">好评</span>';
+							}
+							else if (row.sayLevel==1){
+								str+='<span style="background:green;padding:3px 5px;border-radius:5px;color:#fff;">中评</span>';
+							}
+							else if (row.sayLevel==2){
+								str+='<span style="background:grey;padding:3px 5px;border-radius:5px;color:#fff;">差评</span>';
+							}
+							return str;
+						}
+					},
+					{
+						field: 'sayContent',
+						title: '评价内容'
+					},
+					{
+						field: 'productName',
+						title: '商品信息',
+						formatter: function (value, row, index) {
+							var str= '<img src="'+row.productPic+'" style="width:40px;height: 40px; "/>' + row.productName;
+							return str;
+						}
+					},
+					{
+						field: '',
+						title: '操作',
+						formatter: function (value, row, index) {
+							var actions = [];
+						var beautify = '';
+						if(row.beautifulStatus==0){
+							beautify = '<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="beautify1(\'' + row.id + '\')"><i class="fa fa-edit"></i>设为精选</a> ';
+						}
+						else{
+							beautify = '<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="beautify0(\'' + row.id + '\')"><i class="fa fa-edit"></i>取消精选</a> ';
+						}
+						var showhide = '';
+						if(row.hideStatus==0){
+							showhide = '<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="showhide1(\'' + row.id + '\')"><i class="fa fa-edit"></i>显示</a> ';
+						}
+						else{
+							showhide = '<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="showhide0(\'' + row.id + '\')"><i class="fa fa-edit"></i>隐藏</a> ';
+						}
+						actions.push(beautify);
+						actions.push(showhide);
+						actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="replysay(\'' + row.id + '\')"><i class="fa fa-edit"></i>回复</a>');
+						return actions.join('');
+						}
+					}
+				]
+			};
+			$.table.init(options);
+
+			var oInit = new Object();
+			oInit.InitSubTable = function (index, row, $detail) {
+				detailId = row.id+"SubTable";
+				var cur_table = $detail.html('');
+				$.ajax({
+					url: prefix +"/getbacksay",
+					data : {
+						pid: row.id
+					},
+					type : "post",
+					success:function(data){
+						var str=(data.sayContent==undefined)?'':data.sayContent;
+						if(str!=''){
+							str='<div style="margin-left: 60px;">'+'<span style="color:#ff5050;">[回复]：</span>'+str+'</div>';
+						}
+						$detail.html(str);
+					}
+					,error:function(data){
+						layer.alert('error')
+					}
+				});
+			};
+		});
+
+		function say_ajax(url,sayid,status){
+			$.ajax({
+				url: url,
+				data : {
+					id: sayid,
+					status:status
+				},
+				type : "post",
+				success:function(data){
+					$("#bootstrap-table").bootstrapTable('refresh');
+				}
+				,error:function(data){
+					layer.alert('error')
+				}
+			});
+		}
+
+		function replysay(sayid){
+			$.modal.open("反馈回复", prefix + "/replysay?id="+sayid);
+		}
+
+		function beautify1(sayid) {
+			say_ajax(prefix +'/beautify',sayid,1);
+		}
+		function beautify0(sayid) {
+			say_ajax(prefix +'/beautify',sayid,0);
+		}
+		function showhide1(sayid) {
+			say_ajax(prefix +'/showhide',sayid,1);
+		}
+		function showhide0(sayid) {
+			say_ajax(prefix +'/showhide',sayid,0);
+		}
+
+	</script>
+</body>
+</html>

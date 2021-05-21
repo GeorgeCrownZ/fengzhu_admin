@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改轮播图')" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form1" th:object="${roll}" enctype="multipart/form-data" method="post">
+        <div class="w_500">
+            <div class="stock m_t10 of">
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">序号：</span>
+                    <input class="form-control pull-left" type="number" placeholder="请输入序号" th:field="*{sortNumber}" name="sortNumber" id="sortNumber" required />
+                </div>
+                <div class="of">
+                    <span class="w_w40 text-right pull-left is-required">图片：</span>
+                    <div class="col-sm-8">
+                        <img id="showpic1" src="/img/uppic.jpg" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+                        <input type="file" name="pic" id="pic" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload1(this)" style="width:200px;height:65px;position: absolute;top:0;left:0;z-index: 999;">
+                    </div>
+                </div>
+            </div>
+            <input id="id" name="id" type="hidden" th:field="*{id}"/>
+        </div>
+        <style>
+            .w_500{width:98%; margin: 0 auto;padding:20px 10px;}
+            .of{ overflow: hidden;}
+            .m_t5{margin-top:5px;}
+            .m_b5{margin-bottom:5px;}
+            .m_b10{margin-bottom:10px;}
+            .b_b{border-bottom:1px solid #ddd;}
+            .h_30{height:30px;line-height: 30px;font-size:14px;margin: 0 0 10px 0;}
+            .w_w40{width:80px;margin-right:10px;margin-top:10px;}
+            .stock input{width:80%;height:35px;}
+            .stock div{margin-bottom:10px;}
+            .m_t10{margin-top:10px;}
+            .m_r10{margin-right:10px;}
+            .pull-left{ float: left;}
+        </style>
+    </form>
+</div>
+<style>
+
+    /*.idcardpic{
+        height: 100px;
+        width: 150px;
+    }*/
+    .inputpic{
+        opacity:0;
+        filter:alpha(opacity=0);
+        height: 100px;
+        width: 180px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        cursor:pointer;
+    }
+</style>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<script type="text/javascript">
+    var prefix = ctx + "rollpic";
+
+    $(function () {
+        let showpic1 = document.getElementById("showpic1");
+        let show = "[[${roll.picPath}]]";
+        if(show==null) {
+            show = "/img/uppic.jpg"
+        }
+        showpic1.setAttribute("src",show);
+    })
+
+    $("#form1").validate({
+        rules:{
+            onkeyup: false,
+        },
+        messages: {
+
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var formData = new FormData($("#form1")[0]);
+            $.ajax({
+                url: prefix +"/updateroll",
+                type: 'post',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success :function(data){
+                    if (typeof callback == "function") {
+                        callback(data);
+                    }
+                    $.operate.successCallback(data);
+                }
+            });
+        }
+    }
+
+    function upload1(obj) {
+        //获取展示图片的区域
+        var webLogoImg = document.getElementById("showpic1");
+
+        //获取文件对象
+        let file = obj.files[0];
+        //获取文件阅读器
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            //给img的src设置图片url
+            webLogoImg.setAttribute("src", this.result);
+        }
+    }
+</script>
+</body>
+</html>

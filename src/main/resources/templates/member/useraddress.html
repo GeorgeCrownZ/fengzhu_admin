@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:include="include :: header('用户列表')" />
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-center">
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+
+    var prefix = ctx + "member";
+
+    $(function() {
+        queryAddressList();
+    });
+
+    function queryAddressList() {
+        let userId = '[[${userId}]]';
+        var options = {
+            url: prefix + "/useraddress/"+userId,
+            //createUrl: prefix + "/add",
+            //updateUrl: prefix + "/edit/{id}",
+            //removeUrl: prefix + "/remove",
+            // exportUrl: prefix + "/export",
+            // importUrl: prefix + "/importData",
+            // importTemplateUrl: prefix + "/importTemplate",
+            sortName: "id",
+            sortOrder: "asc",
+            modalName: "收货地址",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'userId',
+                    title: '用户ID',
+                    sortable: true
+                },
+                {
+                    field: 'receiveName',
+                    title: '收货人名字'
+                },
+                {
+                    field: 'receiverSex',
+                    title: '性别'
+                },
+                {
+                    field: 'receiverMobile',
+                    title: '收货人手机',
+                },
+                {
+                    field: 'receiverAddress',
+                    title: '收货地址'
+                },
+                {
+                    field: 'receiverNumber',
+                    title: '门牌号'
+                },
+                {
+                    field: 'lable',
+                    title: '收货地址备注'
+                },
+                {
+                    field: 'isDefault',
+                    title: '是否为默认收货地址',
+                    formatter: function (value, row, index) {
+                        if (row.isDefault != 1) {
+                            return '否';
+                        } else {
+                            return '是';
+                        }
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function (value, row, index) {
+                        if (row.status != 1) {
+                            return '未使用';
+                        } else {
+                            return '使用';
+                        }
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+    }
+</script>
+</body>
+</html>

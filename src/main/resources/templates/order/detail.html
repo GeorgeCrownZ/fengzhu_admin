@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('订单详情')" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<!--订单详情开始-->
+			<div class="col-sm-12 select-table table-striped">
+				<style>
+					.m_r10{margin-right: 10px;}
+					.w_table td{ padding: 16px 8px!important;}
+					.w_table th{padding: 12px 0 !important;}
+					.of{overflow: hidden;}
+					.w_jbxx th{width: 16.67%;}
+					.w_shxx th{width: 25%;}
+					.w_w20{width: 20%; text-align: center;}
+					.w_yuan div{ width: 42px; height: 42px; border-radius: 100%;border:2px solid #ddd; position: absolute;left: 50%;top:0;margin-left: -21px;}
+					.w_yuan div img{ width:25px; height:25px; margin:6px;}
+					.w_line{border: 1px solid #ddd;display: block;margin-top:15px;}
+					.w_yuan{overflow: hidden;position: relative;height:55px;}
+					.w_yuan div{ background: #fff;}
+					.w_w20.active .w_yuan div,.w_w20.active .w_line{border-color:#108DE9;}
+					.bg_white{background:#fff;}
+					.w_btn{border:1px solid #ddd;padding: 5px 10px;}
+					.w_yuan .active{display: none;}
+					.w_w20.active .active{display: block;}
+					.w_w20.active .grey{display: none;}
+					.f_red{color: #F04844;}
+				</style>
+				<h3 class="col-sm-12" style="margin: 15px 0;">
+					订单管理-订单详情
+				</h3>
+				<div class="col-sm-12 of" style="margin:20px 0;">
+					<div class="pull-left w_w20" id="active1">
+						<div class="w_yuan">
+							<div>
+								<img th:src="@{/img/d0.png}" class="grey"/>
+								<img th:src="@{/img/d0a.png}" class="active"/>
+							</div>
+							<span class="w_line pull-right" style="width: 50%;"></span>
+						</div>
+						<div>
+							<span class="block">提交订单</span>
+							<span class="block" id="createorder" th:text="${#dates.format(order.createTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
+						</div>
+					</div>
+					<div class="pull-left w_w20" id="active2">
+						<div class="w_yuan">
+							<div>
+								<img th:src="@{/img/d1.png}" class="grey"/>
+								<img th:src="@{/img/d1a.png}" class="active"/>
+							</div>
+							<span class="w_line"></span>
+						</div>
+						<div>
+							<span class="block">支付订单</span>
+							<span class="block" id="payorder" th:text="${#dates.format(order.payTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
+						</div>
+					</div>
+					<div class="pull-left w_w20" id="active3">
+						<div class="w_yuan">
+							<div>
+								<img th:src="@{/img/d2.png}" class="grey"/>
+								<img th:src="@{/img/d2a.png}" class="active"/>
+							</div>
+							<span class="w_line"></span>
+						</div>
+						<div>
+							<span class="block">商家发货</span>
+							<span class="block" id="sendorder" th:text="${#dates.format(order.sendTime, 'yyyy-MM-dd hh:mm:ss')}"></span>
+						</div>
+					</div>
+					<div class="pull-left w_w20" id="active4">
+						<div class="w_yuan">
+							<div>
+								<img th:src="@{/img/d3.png}" class="grey"/>
+								<img th:src="@{/img/d3a.png}" class="active"/>
+							</div>
+							<span class="w_line"></span>
+						</div>
+						<div>
+							<span class="block">确认收货</span>
+							<span class="block">交易完成</span>
+						</div>
+					</div>
+					<div class="pull-left w_w20" id="active5">
+						<div class="w_yuan">
+							<div>
+								<img th:src="@{/img/d4.png}" class="grey"/>
+								<img th:src="@{/img/d4a.png}" class="active"/>
+							</div>
+							<span class="w_line" style="width: 50%;"></span>
+						</div>
+						<div>
+							<span class="block">完成评价</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12" style="margin: 15px 0;">
+					<span id="status"></span>
+					<button class="pull-right m_r10 bg_white w_btn" onclick="rememory()">备注订单</button>
+					<button class="pull-right m_r10 bg_white w_btn" onclick="removedetail()">取消订单</button>
+					<button class="pull-right m_r10 bg_white w_btn" onclick="editaddress()">修改收货人信息</button>
+					<button class="pull-right m_r10 bg_white w_btn" onclick="express()">发货</button>
+				</div>
+				<div class="col-sm-12 ">
+					<h4 class="col-sm-12" style="margin: 15px 0;">基本信息</h4>
+					<table class="table table-bordered text-center w_table w_jbxx">
+						<tr class="active">
+							<th class="text-center">订单编号</th>
+							<th class="text-center">发货单流水号</th>
+							<th class="text-center">用户账号 </th>
+							<th class="text-center">支付方式</th>
+							<th class="text-center">第三方支付单号</th>
+							<th class="text-center">物流信息</th>
+						</tr>
+						<tr>
+							<td th:text="${order.orderId}"></td>
+							<td th:text="${order.expressNo}"></td>
+							<td th:text="${order.userAccount}"></td>
+							<td th:if="${order.payWay==1}">微信</td>
+							<td th:if="${order.payWay==2}">支付宝</td>
+							<td th:text="${order.payNo}"></td>
+							<td th:if="${order.tradeStatus==1}">已取消</td>
+							<td th:if="${order.tradeStatus==2}">未发货</td>
+							<td th:if="${order.tradeStatus==3}">已发货</td>
+							<td th:if="${order.tradeStatus==4}">已签收</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-sm-12">
+					<h4 style="margin: 15px 0;">收货人信息</h4>
+					<table class="table table-bordered text-center w_table w_shxx">
+						<tr class="active">
+							<th class="text-center">收货人</th>
+							<th class="text-center">手机号码</th>
+							<th class="text-center">收货地址</th>
+						</tr>
+						<tr>
+							<td th:text="${order.receiveName}"></td>
+							<td th:text="${order.receiveTelphone}"></td>
+							<td th:text="${order.address}"></td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="col-sm-12">
+					<h4 style="margin: 15px 0;">商品信息</h4>
+					<table class="table table-bordered text-center w_table w_jbxx">
+						<tr class="active">
+							<th class="text-center">商品图片</th>
+							<th class="text-center">商品名称</th>
+							<th class="text-center">价格</th>
+							<th class="text-center">数量</th>
+							<th class="text-center">优惠金额</th>
+							<th class="text-center">实收金额</th>
+						</tr>
+						<tr th:each="orders,orderdetal:${orderDetails}">
+							<td>
+								<img  src="../static/ruoyi.png" th:src="${orders.productIcon}" style="max-width: 100%;width: 100px;height: 100px;"/>
+							</td>
+							<td th:text="${orders.productName}"></td>
+							<td th:text="'￥'+${orders.productPrice}"></td>
+							<td th:text="${orders.productQuantity}"></td>
+							<td th:text="'￥'+(${orders.productPrice}-${orders.specialofferprice})"></td>
+							<td th:text="${orders.specialofferprice}"></td>
+						</tr>
+						<tr>
+							<td colspan="6" class="text-right active" th:text="'合计：￥'+ ${resultMoney}"> </td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="col-sm-12">
+					<h4 style="margin: 15px 0;">费用信息</h4>
+					<table class="table table-bordered text-center w_table w_shxx">
+						<tr class="active">
+							<th class="text-center">商品合计</th>
+							<th class="text-center">运费</th>
+							<th class="text-center">订单总金额</th>
+							<th class="text-center">应付款金额</th>
+						</tr>
+						<tr>
+							<td th:text="${resultMoney}" class="f_red"></td>
+							<td th:text="${order.expressFee}" class="f_red"></td>
+							<td>
+								<span th:text="'￥'+${sums}" class="f_red"></span>
+							</td>
+							<td><span th:text="'￥'+(${resultMoney}+${order.expressFee})" class="f_red"></span></td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="col-sm-12">
+					<h4 style="margin: 15px 0;">操作信息</h4>
+					<table class="table table-bordered text-center w_table">
+						<tr class="active">
+							<th class="text-center" style="width:12%;">操作者</th>
+							<th class="text-center" style="width:20%;">操作时间</th>
+							<th class="text-center" style="width:12%;">订单状态</th>
+							<th class="text-center" style="width:12%;">付款状态</th>
+							<th class="text-center" style="width:12%;">发货状态</th>
+							<th class="text-center" style="width:32%;">备注</th>
+						</tr>
+						<tr th:each="log,logs:${logList}">
+							<td th:text="${log.opName}"></td>
+							<td th:text="${#dates.format(log.addTime,'yyyy-MM-dd hh:mm:ss')}"></td>
+							<td th:text="${log.tradeStatus}"></td>
+							<td th:text="${log.payStatus}"></td>
+							<td th:text="${log.sendStatus}"></td>
+							<td class="text-left" th:text="${log.remark}"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<!--订单详情结束-->
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+
+	<script>
+		let prefix = ctx + "orderdetail";
+		let detailId = "[[${order.id}]]";
+
+		$(function () {
+			//pull-left w_w20 active
+			let active1 = document.getElementById("active1");
+			let active2 = document.getElementById("active2");
+			let active3 = document.getElementById("active3");
+			let active4 = document.getElementById("active4");
+			let active5 = document.getElementById("active5");
+
+			//订单状态  1: 已取消 2待发货  3待收货 4已签收
+			let tradeStatus = "[[${order.tradeStatus}]]";
+			//是否评价
+			let isComments = "[[${order.isComments}]]";
+			//支付状态：0 未付款 1 已付款
+			let payStatus = "[[${order.payStatus}]]";
+			//订单状态：1 生效中 2 已删除 999 超时订单
+			let orderStatus = "[[${order.orderStatus}]]";
+			if(orderStatus == 1) {
+				if(tradeStatus==1) {
+					$("#status").html("订单状态：订单已取消");
+				}
+				else {	//订单生效状态
+					if(payStatus != 1) {	// 未付款状态
+						active1.setAttribute("class", "pull-left w_w20 active");
+						$("#status").html("订单状态：未付款");
+					} else {	//	已付款状态
+						if(tradeStatus==2) {
+							active1.setAttribute("class", "pull-left w_w20 active");
+							active2.setAttribute("class", "pull-left w_w20 active");
+							$("#status").html("订单状态：已付款，待发货");
+						}
+						if(tradeStatus==3) {
+							active1.setAttribute("class", "pull-left w_w20 active");
+							active2.setAttribute("class", "pull-left w_w20 active");
+							active3.setAttribute("class", "pull-left w_w20 active");
+							$("#status").html("订单状态：商家已发货，待收货");
+						}
+						if(tradeStatus==4 && isComments==0) {
+							active1.setAttribute("class", "pull-left w_w20 active");
+							active2.setAttribute("class", "pull-left w_w20 active");
+							active3.setAttribute("class", "pull-left w_w20 active");
+							active4.setAttribute("class", "pull-left w_w20 active");
+							$("#status").html("订单状态：已签收，待评价");
+						}
+						if(tradeStatus==4 && isComments==1) {
+							active1.setAttribute("class", "pull-left w_w20 active");
+							active2.setAttribute("class", "pull-left w_w20 active");
+							active3.setAttribute("class", "pull-left w_w20 active");
+							active4.setAttribute("class", "pull-left w_w20 active");
+							active5.setAttribute("class", "pull-left w_w20 active");
+							$("#status").html("订单状态：买家已评价，订单完成");
+						}
+					}
+
+				}
+			} else {
+				$("#status").html("订单状态：订单已失效");
+			}
+		});
+
+		function express() {
+			$.modal.open("发货" , ctx + "order/express/"+detailId);
+		};
+
+		function rememory() {
+			$.modal.open("备注" , ctx + "order/rememory/"+detailId);
+		};
+
+		function editaddress() {
+			$.modal.open("收货地址" , ctx + "order/address/"+detailId);
+		};
+
+		function removedetail() {
+			$.modal.confirm("确认要取消订单吗？", function() {
+				$.ajax({
+					url: prefix + "/cancelorder/"+detailId,
+					type: "post",
+					success: function(result) {
+						$.modal.alertSuccess(result.msg);
+					}
+				})
+			})
+		};
+
+	</script>
+</body>
+</html>

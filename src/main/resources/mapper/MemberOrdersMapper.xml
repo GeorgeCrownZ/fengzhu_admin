@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.MemberOrdersMapper">
+
+    <select id="selectOrdersByUserid" resultType="com.soft.web.entity.Order">
+        select * from fa_order where user_id=#{userId}
+    </select>
+
+    <select id="selectByOrderId" resultType="com.soft.web.entity.OrderDetail">
+        select * from fa_order_detail where order_id=#{orderId}
+    </select>
+</mapper>

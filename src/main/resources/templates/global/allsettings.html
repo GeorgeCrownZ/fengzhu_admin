@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增用户')" />
+    <th:block th:include="include :: select2-css" />
+</head>
+<body>
+
+
+<div class="main-content">
+    <form id="form1" class="form-horizontal" enctype="multipart/form-data" method="post" th:object="${global}">
+        <input name="id" type="hidden" id="id" th:value="*{id}"/>
+        <h4 class="form-header h4">基本信息</h4>
+
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab" aria-expanded="true">网站配置</a></li>
+                <li><a href="#tab2" data-toggle="tab" aria-expanded="false">储值卡配置</a></li>
+                <li><a href="#tab3" data-toggle="tab" aria-expanded="false">协议配置</a></li>
+                <li><a href="#tab4" data-toggle="tab" aria-expanded="false">公众号配置</a></li>
+                <li><a href="#tab5" data-toggle="tab" aria-expanded="false">微信小程序配置</a></li>
+                <li><a href="#tab6" data-toggle="tab" aria-expanded="false">微信支付</a></li>
+                <li><a href="#tab7" data-toggle="tab" aria-expanded="false">短信配置</a></li>
+                <li><a href="#tab8" data-toggle="tab" aria-expanded="false">快递配置</a></li>
+            </ul>
+            <div class="tab-content" id="tab-settings">
+
+                <div class="tab-pane active" id="tab1" >
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label is-required">名称：</label>
+                                <div class="col-sm-8">
+                                    <input id="webName" name="webName" th:value="*{webName}" placeholder="请输入名称" class="form-control" type="text" maxlength="30" autocomplete="off" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">备案信息：</label>
+                                <div class="col-sm-8">
+                                    <input id="webRecord" name="webRecord" th:value="*{webRecord}"  placeholder="请输入备案信息" class="form-control" type="text" maxlength="11">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label is-required">LOGO：</label>
+                                <div class="col-sm-8">
+                                    <img id="showpic1" class="idcardpic" th:src="*{webLogo}" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+                                    <input type="file" name="logo" id="logo" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload1(this)" style="width:200px;height:65px;position: absolute;top:0;left:0;z-index: 999;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" >
+                                <label class="col-sm-4 control-label is-required">首页公告弹出图片：</label>
+                                <div class="col-sm-8" >
+                                    <img id="showpic2" name="showpict" th:src="*{noticePic1}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+                                    <img id="showpic3" name="showpict" th:src="*{noticePic2}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: none;">
+                                    <img id="showpic4" name="showpict" th:src="*{noticePic3}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: none;">
+                                    <img id="showpic5" name="showpict" th:src="*{noticePic4}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: none;">
+                                    <input type="file" name="nopic" id="nopic" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload2(this)" style="width:280px;height:65px;position: absolute;top:0;left:0;z-index: 999;" multiple="multiple">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label is-required">我的广告图片：</label>
+                                <div class="col-sm-8">
+                                    <img id="showpic6" class="idcardpic" th:src="*{minePic1}" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+                                    <img id="showpic7" class="idcardpic" th:src="*{minePic2}" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+                                    <input type="file" name="minepic" id="minepic" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload3(this)" style="width:200px;height:65px;position: absolute;top:0;left:0;z-index: 999;" multiple="multiple">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label is-required">是否弹出：</label>
+                                <div class="col-sm-8" th:if="${global.noticeSwitch==1}">
+                                    <label class="radio-box"> <input type="radio" name="noticeSwitch" value="1" checked/> 是 </label>
+                                    <label class="radio-box"> <input type="radio" name="noticeSwitch" value="0"/> 否 </label>
+                                </div>
+                                <div class="col-sm-8" th:if="${global.noticeSwitch!=1}">
+                                    <label class="radio-box"> <input type="radio" name="noticeSwitch" value="1" /> 是 </label>
+                                    <label class="radio-box"> <input type="radio" name="noticeSwitch" value="0" checked/> 否 </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="tab-pane" id="tab2">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">提现下限：</label>
+                                <div class="col-sm-8">
+                                    <input id="cashOutDown" name="cashOutDown" th:value="*{cashOutDown}" placeholder="请输入提现下限" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">提现手续费：</label>
+                                <div class="col-sm-8">
+                                    <input id="cashOutFee" name="cashOutFee" th:value="*{cashOutFee}" placeholder="请输入提现手续费" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">提现次数：</label>
+                                <div class="col-sm-8">
+                                    <input name="cashOutNum" id="cashOutNum" th:value="*{cashOutNum}" placeholder="请输入提现次数" class="form-control" type="text" autocomplete="new-password" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label is-required">是否开启提现：</label>
+                                <div class="col-sm-8" th:if="${global.cashOutSwitch==1}">
+                                    <label class="radio-box"> <input type="radio" name="cashOutSwitch" value="1" checked/> 是 </label>
+                                    <label class="radio-box"> <input type="radio" name="cashOutSwitch" value="0" /> 否 </label>
+                                </div>
+                                <div class="col-sm-8" th:if="${global.cashOutSwitch!=1}">
+                                    <label class="radio-box"> <input type="radio" name="cashOutSwitch" value="1" /> 是 </label>
+                                    <label class="radio-box"> <input type="radio" name="cashOutSwitch" value="0" checked/> 否 </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级主任条件1-社区总消费积分大于：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeDirector1" name="upgradeDirector1" th:value="*{upgradeDirector1}" placeholder="请输入积分" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级主任条件2-社区数量：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeDirector2" name="upgradeDirector2" th:value="*{upgradeDirector2}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级经理条件1-拥有几个不同社区：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeManager1" name="upgradeManager1" th:value="*{upgradeManager1}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级经理条件2-社区等级：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeManager2" name="upgradeManager2" th:value="*{upgradeManager2}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级总监条件1-拥有几个不同社区：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeChiefinspector1" name="upgradeChiefinspector1" th:value="*{upgradeChiefinspector1}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级总监条件2-社区等级：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeChiefinspector2" name="upgradeChiefinspector2" th:value="*{upgradeChiefinspector2}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级总裁条件1-拥有几个不同社区：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeCeo1" name="upgradeCeo1" th:value="*{upgradeCeo1}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">升级总裁条件2-社区等级：</label>
+                                <div class="col-sm-8">
+                                    <input id="upgradeCeo2" name="upgradeCeo2" th:value="*{upgradeCeo2}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">专员分享奖：</label>
+                                <div class="col-sm-8">
+                                    <input id="share1" name="share1" th:value="*{share1}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">专员分享奖2：</label>
+                                <div class="col-sm-8">
+                                    <input id="share2" name="share2" th:value="*{share2}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">主任差额奖：</label>
+                                <div class="col-sm-8">
+                                    <input id="directorDifferenceAward" name="directorDifferenceAward" th:value="*{directorDifferenceAward}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">经理差额奖：</label>
+                                <div class="col-sm-8">
+                                    <input id="managerDifferenceAward" name="managerDifferenceAward" th:value="*{managerDifferenceAward}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">总监差额奖：</label>
+                                <div class="col-sm-8">
+                                    <input id="chiefinspectorDifferenceAward" name="chiefinspectorDifferenceAward" th:value="*{chiefinspectorDifferenceAward}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">总裁差额奖：</label>
+                                <div class="col-sm-8">
+                                    <input id="ceoDifferenceAward" name="ceoDifferenceAward" th:value="*{ceoDifferenceAward}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">管理奖：</label>
+                                <div class="col-sm-8">
+                                    <input id="managementAward" name="managementAward" th:value="*{managementAward}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">普通商品返积分：</label>
+                                <div class="col-sm-8">
+                                    <input id="integral" name="integral" th:value="*{integral}" placeholder="请输入积分" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">丰收产品购买上限金额（每周）：</label>
+                                <div class="col-sm-8">
+                                    <input id="purchaseCap" name="purchaseCap" th:value="*{purchaseCap}" placeholder="请输入金额" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="tab3">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">用户协议：</label>
+                            <div class="col-sm-7">
+                                <textarea name="userAgreement" id="userAgreement" th:utext="*{userAgreement}" placeholder="请输入用户协议" class="form-control" rows="6" autocomplete="new-password"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab4">
+                    公众号配置
+                </div>
+                <div class="tab-pane" id="tab5">
+                    微信小程序配置
+                </div>
+                <div class="tab-pane" id="tab6">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">APPID：</label>
+                                <div class="col-sm-7">
+                                    <input id="wechatAppid" name="wechatAppid" th:value="*{wechatAppid}" class="form-control" type="text" maxlength="20" placeholder="请输入APPID">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">商户号：</label>
+                                <div class="col-sm-7">
+                                    <input id="wechatMerchantNum" name="wechatMerchantNum" th:value="*{wechatMerchantNum}" class="form-control" type="text" maxlength="20" placeholder="请输入商户号">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">密钥：</label>
+                                <div class="col-sm-7">
+                                    <input id="wechatToken" name="wechatToken" class="form-control" th:value="*{wechatToken}" type="text" maxlength="20" placeholder="请输入密钥">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">回调路径：</label>
+                                <div class="col-sm-7">
+                                    <input id="wechatCallbackUrl" name="wechatCallbackUrl" th:value="*{wechatCallbackUrl}" class="form-control" type="text" maxlength="20" placeholder="请输入回调路径">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">cert.pem：</label>
+                                <div class="col-sm-7">
+                                    <textarea id="wechatCertPem" rows="7" name="wechatCertPem" th:utext="*{wechatCertPem}" class="form-control" type="text" maxlength="700" placeholder="请输入cert.pem"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">key.pem：</label>
+                                <div class="col-sm-7">
+                                    <textarea id="wechatKeyPem" rows="7" name="wechatKeyPem" th:utext="*{wechatKeyPem}" class="form-control" maxlength="700" placeholder="请输入key.pem"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab7">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">短信签名：</label>
+                                <div class="col-sm-8">
+                                    <input id="smsSignature" name="smsSignature" th:value="*{smsSignature}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">身份验证验证码：</label>
+                                <div class="col-sm-8">
+                                    <input id="authenticationCode" name="authenticationCode" th:value="*{authenticationCode}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">登录确认验证码：</label>
+                                <div class="col-sm-8">
+                                    <input id="loginCode" name="loginCode" th:value="*{loginCode}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">登录异常验证码：</label>
+                                <div class="col-sm-8">
+                                    <input id="loginExceptionCode" name="loginExceptionCode" th:value="*{loginExceptionCode}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">用户注册验证码：</label>
+                                <div class="col-sm-8">
+                                    <input id="registerCode" name="registerCode" th:value="*{registerCode}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">修改密码验证码：</label>
+                                <div class="col-sm-8">
+                                    <input id="updatePasswordCode" name="updatePasswordCode" th:value="*{updatePasswordCode}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">信息变更验证码：</label>
+                                <div class="col-sm-8">
+                                    <input id="informationChangeCode" name="informationChangeCode" th:value="*{informationChangeCode}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">快递授权key：</label>
+                                <div class="col-sm-8">
+                                    <input id="authenticationKey" name="authenticationKey" th:value="*{authenticationKey}" placeholder="请输入社区等级" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">customer：</label>
+                                <div class="col-sm-8">
+                                    <input id="customer" name="customer" th:value="*{customer}" placeholder="请输入社区数量" class="form-control" type="text" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">AccessKeyID：</label>
+                                <div class="col-sm-8">
+                                    <textarea id="accessKeyId" name="accessKeyId" th:utext="*{accessKeyId}" placeholder="AccessKeyID" class="form-control" rows="6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">AccessKeySecret：</label>
+                                <div class="col-sm-8">
+                                    <textarea id="accessKeySecret" name="accessKeySecret" th:utext="*{accessKeySecret}" placeholder="AccessKeySecret" class="form-control" rows="6" ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab8">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">快递费用(满100包邮)：</label>
+                                <div class="col-sm-7">
+                                    <input id="deliveryCost" name="deliveryCost" class="form-control" th:value="*{deliveryCost}" type="text" maxlength="20" placeholder="请输入快递费用">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">发件人：</label>
+                                <div class="col-sm-7">
+                                    <input id="fromName" name="fromName" class="form-control" th:value="*{fromName}" type="text" maxlength="20" placeholder="请输入发件人">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">发货人电话：</label>
+                                <div class="col-sm-7">
+                                    <input id="fromTel" name="fromTel" class="form-control" th:value="*{fromTelminePic}" type="text" maxlength="20" placeholder="请输入发件人电话">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label class="col-sm-5 control-label">发货人地址：</label>
+                                <div class="col-sm-7">
+                                    <input id="fromAddress" name="fromAddress" class="form-control" th:value="*{fromAddress}" type="text" maxlength="20" placeholder="请输入发货人地址">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+    </div>
+</div>
+
+<style>
+    .inputpic{
+        opacity:0;
+        filter:alpha(opacity=0);
+        height: 100px;
+        width: 180px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        cursor:pointer;
+    }
+</style>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: select2-js" />
+<script>
+    var prefix = ctx + "global";
+
+    $(function () {
+        let show1 = "[[${global.webLogo}]]";
+        let show2 = "[[${global.noticePic1}]]";
+        let show3 = "[[${global.noticePic2}]]";
+        let show4 = "[[${global.noticePic3}]]";
+        let show5 = "[[${global.noticePic4}]]";
+        let showpic1 = document.getElementById("showpic1");
+        let showpic2 = document.getElementById("showpic2");
+        let showpic3 = document.getElementById("showpic3");
+        let showpic4 = document.getElementById("showpic4");
+        let showpic5 = document.getElementById("showpic5");
+        if(show1!=null) {
+            showpic1.setAttribute("src",show1);
+        } else {
+            showpic1.setAttribute("src","/img/uppic.jpg");
+        }
+
+        if(show2!=null) {
+            showpic2.setAttribute("src",show2);
+        } else {
+            showpic2.setAttribute("src","/img/uppic.jpg");
+        }
+
+        if(show3!='') {
+            showpic3.setAttribute("src",show3);
+            showpic3.style.display="inline-block";
+        } else {
+            showpic3.setAttribute("src","/img/uppic.jpg");
+        }
+
+        if(show4!='') {
+            showpic4.setAttribute("src",show4);
+            showpic4.style.display="inline-block";
+        } else {
+            showpic4.setAttribute("src","/img/uppic.jpg");
+        }
+
+        if(show5!='') {
+            showpic5.setAttribute("src",show5);
+            showpic5.style.display="inline-block";
+        } else {
+            showpic5.setAttribute("src","/img/uppic.jpg");
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var formData = new FormData($("#form1")[0]);
+            $.ajax({
+                url: prefix +"/addglobal",
+                type: 'post',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success :function(data){
+                    $.modal.alertSuccess(data.msg);
+                    setTimeout(function(){ window.location.reload(); }, 2000);
+                }
+            });
+        }
+    }
+
+    function upload1(obj) {
+        //获取展示图片的区域
+        var webLogoImg = document.getElementById("showpic1");
+        //获取文件对象
+        let file = obj.files[0];
+        //获取文件阅读器
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            //给img的src设置图片url
+            webLogoImg.setAttribute("src", this.result);
+        }
+    }
+
+    function upload2(obj) {
+        //获取文件对象
+        let file = obj.files;
+
+        if(file.length==1){
+
+            //获取文件阅读器
+            let reader = new FileReader();
+
+            //获取展示图片的区域
+            let nopic = document.getElementById("showpic2");
+            reader.readAsDataURL(file[0]);
+            reader.onload = function(){
+                //给img的src设置图片url
+                nopic.setAttribute("src", this.result);
+            }
+        } else {
+            for(let i=0;i<file.length;i++) {
+                //获取文件阅读器
+                let reader = new FileReader();
+                let imagepic = document.getElementById("showpic"+(i+2));
+                reader.readAsDataURL(file[i]);
+                reader.onload = function(){
+                    //给img的src设置图片url
+                    imagepic.style.display="inline-block";
+                    imagepic.setAttribute("src", this.result);
+                }
+            }
+        }
+    }
+
+    function upload3(obj) {
+        //获取文件对象
+        let file = obj.files;
+        if(file.length==1){
+            //获取文件阅读器
+            let reader = new FileReader();
+            //获取展示图片的区域
+            let mpic = document.getElementById("showpic3");
+            reader.readAsDataURL(file[0]);
+            reader.onload = function(){
+                //给img的src设置图片url
+                mpic.setAttribute("src", this.result);
+            }
+        }
+        else if(file.length>1){
+            for(let i=0;i<file.length;i++) {
+                //获取文件阅读器
+                let reader = new FileReader();
+                let imagepic = document.getElementById("showpic"+(i+6));
+                reader.readAsDataURL(file[i]);
+                reader.onload = function(){
+                    //给img的src设置图片url
+                    imagepic.style.display="inline-block";
+                    imagepic.setAttribute("src", this.result);
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>

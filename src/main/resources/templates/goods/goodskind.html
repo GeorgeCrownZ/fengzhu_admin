@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('商品品类')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+
+
+			<div class="btn-group-sm" id="toolbar" role="group">
+				<h3 class="" style="margin:20px 0;">全部商品品类</h3>
+				<a class="btn btn-success" onclick="$.operate.add(0)" >
+	                <i class="fa fa-plus"></i> 新增
+	            </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-tree-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var prefix = ctx + "goods";
+		$(function() {
+		    var options = {
+				code: "id",
+				parentCode: "pid",
+				uniqueId: "id",
+				expandAll: true,
+				expandFirst: true,
+		        url: prefix + "/kindlist",
+				createUrl: prefix + "/kindadd/{id}",
+				updateUrl: prefix + "/kindedit/{id}",
+		        removeUrl: prefix + "/kindremove/{id}",
+		        modalName: "商品品类",
+		        columns: [
+					{
+						field: 'selectItem',
+						radio: true
+					},
+					{
+						title: '品类名称',
+						field: 'categoryName',
+						width: '20%'
+						,formatter: function(value, row, index) {
+							if ($.common.isEmpty(row.urlimg)) {
+								return row.categoryName;
+							} else {
+								return '<i class="' + row.urlimg + '"></i> <span class="nav-label">' + row.categoryName + '</span>';
+							}
+						}
+					},
+					{
+						field: 'sortnum',
+						title: '序号'
+					},
+
+		        {
+		            field: 'productcount',
+		            title: '商品数量'
+		        },
+				{
+					field: 'showcategory',
+					title: '显示品类',
+					formatter: function (value, row, index) {
+						if (row.status != 1) {
+							return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+						} else {
+							return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+						}
+					}
+				},
+					{
+						title: '操作',
+						align: "left",
+						formatter: function(value, row, index) {
+							var actions = [];
+							actions.push('<a class="btn btn-info btn-xs " href="javascript:void(0)" onclick="$.operate.add(\'' + row.id + '\')"><i class="fa fa-plus"></i>新增</a> ');
+							actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+							actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-trash"></i>删除</a>');
+							return actions.join('');
+						}
+					}
+		        ]
+		    };
+			$.treeTable.init(options);
+		});
+
+		function disable(id) {
+			$.modal.confirm("确认要隐藏吗？", function() {
+				$.operate.post(prefix + "/goodskindshow", { "id": id, "status": 0 });
+			})
+		}
+
+		function enable(id) {
+			$.modal.confirm("确认要显示吗？", function() {
+				$.operate.post(prefix + "/goodskindshow", { "id": id, "status": 1 });
+			})
+		}
+
+	</script>
+</body>
+</html>

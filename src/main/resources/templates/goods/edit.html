@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增商品')" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+
+		<div class="w_w82">
+			<div class="stock m_t10 of">
+				<form class="form-horizontal m" id="form1" th:object="${product}">
+					<input id="productId" name="productId" type="hidden" th:field="*{productId}"/>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">名称：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text" placeholder="请输入名称" th:field="*{productName}" name="productName" id="productName" required />
+					</div>
+				</div>
+					<div class="of">
+						<span class="w_w40 text-right pull-left">简介：</span>
+						<div class="w_w82 pull-left">
+							<input class="form-control pull-left" type="text" placeholder="请输入简介" th:field="*{lable}" name="label" id="label" required />
+						</div>
+					</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">价格：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text" placeholder="请输入价格" th:field="*{price}" name="price" id="price" required />
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">特价价格：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text" placeholder="请输入特价价格" th:field="*{specialofferprice}" name="specialofferprice" id="specialofferprice" required />
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">库存：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text"  placeholder="请输入库存" th:field="*{currentInventory}" name="currentInventory" id="currentInventory" required />
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">重量：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text"  placeholder="请输入重量" th:field="*{measurement}" name="measurement" id="measurement" required />
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">销量：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text" placeholder="请输入销量" th:field="*{salenum2}" name="salenum2" id="salenum2" required />
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">排序：</span>
+					<div class="w_w82 pull-left">
+						<input class="form-control pull-left" type="text"  placeholder="请输入排序" th:field="*{indexno}" name="indexno" id="indexno" required />
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">品类：</span>
+					<div class="w_w82 pull-left">
+						<select name="productCategoryId" class="form-control" th:with="cg=${@category.getall()}">
+							<option th:each="t : ${cg}" th:text="${t.categoryName}" th:value="${t.id}"  th:field="*{productCategoryId}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="of">
+					<span class="w_w40 text-right pull-left">标签：</span>
+					<div class="w_w82 pull-left">
+						<label th:each="spec:${specs}" class="check-box">
+							<input name="specid" type="checkbox" th:value="${spec.id}" th:text="${spec.specName}" th:checked="${spec.ck}">
+						</label>
+					</div>
+				</div>
+				</form>
+				<form class="form-horizontal m" id="form2" enctype="multipart/form-data"  method="post">
+					<div class="of">
+						<span class="w_w40 text-right pull-left">
+							图片：
+						</span>
+						<div class="w_w82 pull-left w_imgbox of" >
+							<div id="gdpic" class="pull-left">
+
+							</div>
+							<div class="pull-left" style="position: relative">
+								<img id="showpic1" th:src="@{/img/uppic.jpg}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+								<input type="file" name="showpic" id="showpic" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload1(this)" style="width:65px;height:65px;position: absolute;top:0;left:0;z-index: 999;">
+							</div>
+						</div>
+					</div>
+				</form>
+				<form class="form-horizontal m" id="form3" enctype="multipart/form-data"  method="post">
+					<div class="of">
+						<span class="w_w40 text-right pull-left">
+							商品详情：
+						</span>
+						<div class="w_w82 pull-left w_imgbox of">
+							<div id="goodsdetail" class="pull-left">
+
+							</div>
+							<div class="pull-left" style="position: relative">
+								<img id="detpic1" th:src="@{/img/uppic.jpg}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+								<input type="file" name="detpic" id="detpic" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload2(this)" style="width:65px;height:65px;position: absolute;top:0;left:0;z-index: 999;">
+							</div>
+						</div>
+					</div>
+				</form>
+
+			</div>
+
+		</div>
+
+</div>
+<style>
+	.w_w82{ width: 82%;}
+	.w_98{width:98%; margin: 0 auto;padding:20px 10px;}
+	.of{ overflow: hidden;}
+	.m_t5{margin-top:5px;}
+	.m_b5{margin-bottom:5px;}
+	.m_b10{margin-bottom:10px;}
+	.b_b{border-bottom:1px solid #ddd;}
+	.h_30{height:30px;line-height: 30px;font-size:14px;margin: 0 0 10px 0;}
+	.w_w40{width:90px;margin-right:10px;margin-top:10px;}
+	.stock input[type="text"]{width:100%;height:35px;}
+	.stock div{margin-bottom:10px;}
+	.m_t10{margin-top:10px;}
+	.m_r10{margin-right:10px;}
+	.pull-left{ float: left;}
+	.stock img{width:40px; height: 40px;}
+	.stock .w_imgbox img{width:65px;height:65px;margin:0 15px 15px 0; float: left;}
+	/*商品订单中的弹窗样式*/
+	.f_red{color: #D9001B;margin:0 3px;}
+	.w_city select{width: 31%;margin-right:2%; float: left;}
+
+	.idcardpic{
+		height: 100px;
+		width: 150px;
+	}
+	.clickpic{
+		position: relative;
+	}
+	.inputpic{
+		opacity:0;
+		filter:alpha(opacity=0);
+		height: 100px;
+		width: 180px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 9;
+		cursor:pointer;
+	}
+</style>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<script type="text/javascript">
+	var prefix = ctx + "goods";
+	$("#form1").validate({
+		rules:{
+			onkeyup: false,
+		},
+		messages: {
+
+		},
+		focusCleanup: true
+	});
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/editsave", $('#form1').serialize());
+		}
+	}
+
+	$(function(){
+		var pid=[[${product.productId}]];
+		$.ajax({
+			url: prefix +"/getgoodspic",
+			data : {
+				pid: pid
+			},
+			type : "post",
+			success:function(data){
+				listgoodpic(data);
+			}
+			,error:function(data){
+				layer.alert('error')
+			}
+		});
+		$.ajax({
+			url: prefix +"/getgoodsdetail",
+			data : {
+				pid: pid
+			},
+			type : "post",
+			success:function(data){
+				listgooddetail(data);
+			}
+			,error:function(data){
+				layer.alert('error')
+			}
+		});
+	});
+
+	function upload1(obj) {
+		//获取展示图片的区域
+		var img = document.getElementById("showpic");
+		//获取文件对象
+		let file = obj.files[0];
+		//获取文件阅读器
+		let reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function(){
+			//给img的src设置图片url
+			// img.setAttribute("src", this.result);
+			var formData = new FormData($("#form2")[0]);
+			$.ajax({
+				url: prefix +"/picupload?pid=[[${product.productId}]]",
+				type: 'post',
+				data: formData,
+				async: true,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (data) {
+					listgoodpic(data);
+				}
+				,error: function (data) {
+					layer.alert('error')
+				}
+			});
+		}
+	}
+
+	function upload2(obj) {
+		//获取展示图片的区域
+		var img = document.getElementById("detpic");
+		//获取文件对象
+		let file = obj.files[0];
+		//获取文件阅读器
+		let reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function(){
+			//给img的src设置图片url
+			// img.setAttribute("src", this.result);
+			var formData = new FormData($("#form3")[0]);
+			$.ajax({
+				url: prefix +"/goodsdetailupload?pid=[[${product.productId}]]",
+				type: 'post',
+				data: formData,
+				async: true,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (data) {
+					listgooddetail(data);
+				}
+				,error: function (data) {
+					layer.alert('error')
+				}
+			});
+		}
+	}
+
+	function listgoodpic(arr){
+		var str = '';
+		for(var i in arr){
+			str+='<img src=' + arr[i].picPath + ' onclick="delgoodpic('+arr[i].id+')">';
+		}
+		$("#gdpic").html(str);
+	}
+
+	function listgooddetail(arr){
+		var str = '';
+		for(var i in arr){
+			str+='<img src=' + arr[i].detailPath + ' onclick="delgoodsdetail('+arr[i].id+')">';
+		}
+		$("#goodsdetail").html(str);
+	}
+
+	function delgoodpic(picid) {
+		$.modal.confirm("确定删除图片吗？", function() {
+			$.ajax({
+				url: prefix +"/delgoodspic",
+				data : {
+					picid: picid
+				},
+				type : "post",
+				success:function(data){
+					listgoodpic(data);
+				}
+				,error:function(data){
+					layer.alert('error')
+				}
+			});
+		});
+	}
+
+	function delgoodsdetail(picid) {
+		$.modal.confirm("确定删除该详情吗？", function() {
+			$.ajax({
+				url: prefix +"/delgoodsdetail",
+				data : {
+					picid: picid
+				},
+				type : "post",
+				success:function(data){
+					listgooddetail(data);
+				}
+				,error:function(data){
+					layer.alert('error')
+				}
+			});
+		});
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改用户')" />
+	<style>
+	.idcardpic{
+	height: 100px;
+	width: 150px;
+	}
+
+	.inputpic{
+	opacity:0;
+	filter:alpha(opacity=0);
+	height: 100px;
+	width: 180px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 9;
+	cursor:pointer;
+	}
+	</style>
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form1" enctype="multipart/form-data"  method="post" th:object="${member}">
+			<!--用户列表中的编辑  用户详情中的编辑资料   弹窗开始-->
+			<input id="id" name="id" type="hidden" th:field="*{id}"/>
+				<div class="row">
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">账号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="userAccount" name="userAccount" placeholder="请输入账号" th:field="*{userAccount}" autocomplete="off" required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">昵称：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="userNick" name="userNick" placeholder="请输入昵称" th:field="*{userNick}" autocomplete="off" required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">真实姓名：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="trueName" name="trueName" placeholder="请输入真实姓名" th:field="*{trueName}" autocomplete="off" required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">手机号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="mobileNumber" name="mobileNumber" placeholder="请输入手机号" th:field="*{mobileNumber}" autocomplete="off" required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">密码：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="password" id="password" name="password" placeholder="请输入密码" autoComplete="new-password" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">身份证号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="pincode" name="pincode" placeholder="请输入身份证号" th:field="*{pincode}" autocomplete="off" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">头像：</label>
+						<div class="col-sm-10" style="position: relative">
+							<img id="img1" th:src="*{headPic}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+							<input type="file" name="hpic" id="hpic" class="inputpic" accept="image/jpg,image/jpeg,image/png" onchange="upload1(this)" style="width:65px;height:65px;position: absolute;top:0;left:15px;z-index: 999;">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">支付密码：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="password" id="payPassword" name="payPassword" placeholder="请输入支付密码" autocomplete="off" />
+						</div>
+					</div>
+				</div>
+
+			<!--用户列表中的编辑  用户详情中的编辑资料 弹窗结束-->
+
+		</form>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<script>
+		var prefix = ctx + "member";
+		$("#form1").validate({
+			rules:{
+				// headPic:{
+				// 	required:true,
+				// },
+			},
+			messages: {
+	
+			},
+			focusCleanup: true
+		});
+	
+		function submitHandler() {
+			if ($.validate.form()) {
+				var formData = new FormData($("#form1")[0]);
+				// alert(JSON.stringify(formData));
+				$.ajax({
+					url: prefix +"/editsave",
+					type: 'post',
+					data: formData,
+					async: true,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						if (typeof callback == "function") {
+							callback(data);
+						}
+						$.operate.successCallback(data);
+					}
+					,error: function (data) {
+						layer.alert('error')
+					}
+				});
+			}
+		}
+
+		function upload1(obj) {
+			//获取展示图片的区域
+			var img = document.getElementById("img1");
+			//获取文件对象
+			let file = obj.files[0];
+			//获取文件阅读器
+			let reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function(){
+				//给img的src设置图片url
+				img.setAttribute("src", this.result);
+			}
+		}
+
+		$(function() {
+
+		});
+	</script>
+</body>
+</html>

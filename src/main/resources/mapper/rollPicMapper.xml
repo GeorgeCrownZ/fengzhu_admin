@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.RollPicMapper">
+    <select id="selectAllRollPic" resultType="com.soft.web.entity.RollPic">
+        select * from fa_rollpic order by sort_number
+    </select>
+
+    <update id="updateStatus" parameterType="com.soft.web.entity.RollPic">
+        update fa_rollpic set status=#{status} where id=#{id}
+    </update>
+
+    <delete id="deleteRolls" parameterType="com.soft.web.entity.RollPic">
+        delete from fa_rollpic where id in
+        <foreach collection='rollPics' item='id' open='(' separator=',' close=')'>
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

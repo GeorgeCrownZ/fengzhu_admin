@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:include="include :: header('用户社区积分列表')" />
+    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+<div class="ui-layout-center">
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="form1">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                搜索列表：<input type="text" name="searchKey"/>
+                            </li>
+                            <li class="select-time">
+                                <label>操作时间： </label>
+                                <input type="text" class="time-input" id="beginTime" placeholder="开始时间" name="beginTime"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="endTime"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <!--			<div class="btn-group-sm" id="toolbar" role="group">-->
+            <!--				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="order:add">-->
+            <!--					<i class="fa fa-plus"></i> 新增-->
+            <!--				</a>-->
+            <!--				<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="order:edit">-->
+            <!--					<i class="fa fa-edit"></i> 修改-->
+            <!--				</a>-->
+            <!--				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="order:remove">-->
+            <!--					<i class="fa fa-remove"></i> 删除-->
+            <!--				</a>-->
+            <!--			</div>-->
+
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+    var prefix = ctx + "memberupgrade";
+    var oInit = new Object();
+
+    $(function() {
+        memberupgrade();
+    });
+
+    function memberupgrade() {
+        var options = {
+            url: prefix + "/scorelist",
+            // createUrl: prefix + "/add",
+            // updateUrl: prefix + "/edit/{id}",
+            // removeUrl: prefix + "/remove",
+            // exportUrl: prefix + "/export",
+            // importUrl: prefix + "/importData",
+            // importTemplateUrl: prefix + "/importTemplate",
+            sortName: "add_time",
+            sortOrder: "desc",
+            modalName: "用户社区积分列表",
+            onExpandRow: function(index, row, $detail){
+                oInit.InitSubTable(index, row, $detail);
+            },
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id'
+                },
+                {
+                    field: 'userId',
+                    title: '受益人ID',
+                    sortable: true
+                },
+                {
+                    field: 'userNick',
+                    title: '受益人'
+                },
+                {
+                    field: 'topUserId',
+                    title: '返利人ID'
+                },
+                {
+                    field: 'topUserNick',
+                    title: '返利人昵称'
+                },
+                {
+                    field: 'billScore',
+                    title: '下单积分'
+                },
+                {
+                    field: 'topOldScore',
+                    title: '上级原积分'
+                },
+                {
+                    field: 'topNewScore',
+                    title: '上级现积分'
+                },
+                {
+                    field: 'addTime',
+                    title: '操作时间'
+                }
+            ]
+        };
+        $.table.init(options);
+    }
+</script>
+</body>
+</html>

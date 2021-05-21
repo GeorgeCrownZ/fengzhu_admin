@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.CallUsMapper">
+
+    <select id="selectAllList" resultType="com.soft.web.entity.CallUs">
+        select * from fa_callus where  (pid IS NULL OR pid = 0)
+        <if test="searchkey != null and searchkey != ''">
+            AND saycontent like concat('%', #{searchkey}, '%')
+        </if>
+    </select>
+
+    <select id="selectAllListByPid" resultType="com.soft.web.entity.CallUs">
+        select * from fa_callus where pid = (select id from fa_callus where id=#{id})
+    </select>
+
+    <select id="selectByUserId" parameterType="com.soft.web.entity.CallUs">
+        select * from fa_user where id=#{id}
+    </select>
+
+</mapper>

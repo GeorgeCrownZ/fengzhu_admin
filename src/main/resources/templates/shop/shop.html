@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('店铺列表')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								店铺名称：<input type="text" name="shopName"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+		
+			<div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="shop:add">
+	                <i class="fa fa-plus"></i> 新增
+	            </a>
+	            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="shop:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="shop:remove">
+		            <i class="fa fa-remove"></i> 删除
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var prefix = ctx + "shop";
+
+		$(function() {
+		    var options = {
+		        url: prefix + "/list",
+		        createUrl: prefix + "/add",
+		        updateUrl: prefix + "/edit/{id}",
+		        removeUrl: prefix + "/remove",
+		        // exportUrl: prefix + "/export",
+		        sortName: "sort",
+		        modalName: "店铺",
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            title: '店铺编号'
+		        },
+		        {
+		            field: 'shopName',
+		            title: '店铺名称',
+		        },
+		        {
+		            field: 'shopPic',
+		            title: '店铺图片',
+					formatter: function(value, row, index) {
+						return '<img src="'+row.shopPic+'" style="width: 100px;height: 100px;"> ';
+					}
+		        },
+		        {
+		            field: 'sort',
+		            title: '显示顺序',
+					sortable: true
+		        },
+		        {
+		            field: 'status',
+		            title: '是否启用',
+					formatter: function(value, row, index) {
+						if (row.status != 1) {
+							return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+						} else {
+							return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+						}
+					}
+		        },
+				{
+					field: 'addTime',
+					title: '添加时间',
+				},
+		        ]
+		    };
+		    $.table.init(options);
+		});
+		function disable(id) {
+			$.modal.confirm("确认要禁用吗？", function() {
+				$.operate.post(prefix + "/enable", { "id": id, "status": 0 });
+			})
+		}
+
+		function enable(id) {
+			$.modal.confirm("确认要启用吗？", function() {
+				$.operate.post(prefix + "/enable", { "id": id, "status": 1 });
+			})
+		}
+	</script>
+</body>
+</html>

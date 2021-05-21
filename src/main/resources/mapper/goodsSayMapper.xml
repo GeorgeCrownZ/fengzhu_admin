@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.web.dao.GoodsSayMapper">
+    <update id="beautify">
+        update fa_product_say set beautiful_status = #{status} where id=#{id}
+    </update>
+
+    <update id="showhide">
+        update fa_product_say set hide_status = #{status} where id=#{id}
+    </update>
+
+    <select id="goodsSaylist" resultType="com.soft.web.entity.GoodsSay">
+        select * from fa_product_say where  (pid IS NULL OR pid = 0)
+        <if test="searchkey != null and searchkey != ''">
+            AND say_content like concat('%', #{searchkey}, '%')
+        </if>
+    </select>
+
+    <select id="getbacksay" resultType="com.soft.web.entity.GoodsSay">
+        select * from fa_product_say where pid=#{pid}
+    </select>
+
+    <select id="getbacksayList" resultType="com.soft.web.entity.GoodsSay">
+        select * from fa_product_say where pid=#{pid}
+    </select>
+</mapper>

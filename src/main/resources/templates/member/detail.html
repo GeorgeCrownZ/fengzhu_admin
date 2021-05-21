@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('详情')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form1" enctype="multipart/form-data"  method="post" th:object="${member}">
+
+			<input id="id" name="id" type="hidden" th:value="*{id}"/>
+				<div class="row">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">账号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="userAccount" name="userAccount" th:value="*{userAccount}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">昵称：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="userNick" name="userNick" th:value="*{userNick}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">真实姓名：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="trueName" name="trueName" th:value="*{trueName}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">手机号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="mobileNumber" name="mobileNumber" th:value="*{mobileNumber}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">sex：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="sex" name="sex" th:value="*{sex}" autoComplete="new-password" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">身份证号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="pincode" name="pincode" th:value="*{pincode}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">头像：</label>
+						<div class="col-sm-10" style="position: relative">
+							<img id="img1" th:src="*{headPic}" class="idcardpic" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">状态：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="userState" name="userState" th:value="${member.userState==1?'启用':'禁用'}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">是否为员工身份：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="isEmployee" name="isEmployee" th:value="${member.isEmployee==1?'是':'否'}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">微信openid：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="openId" name="openId" th:value="*{openId}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">是否为专员：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="grade1" name="grade1" th:value="${member.grade1==1?'是':'否'}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">职位：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" name="grade2" th:if="${member.grade2==null}" th:value="无职位" autocomplete="off" readonly/>
+							<input class="form-control pull-left" type="text" name="grade2" th:if="${member.grade2==2}" th:value="主任" placeholder="请输入支付密码" autocomplete="off" readonly/>
+							<input class="form-control pull-left" type="text" name="grade2" th:if="${member.grade2==3}" th:value="经理" autocomplete="off" readonly/>
+							<input class="form-control pull-left" type="text" name="grade2" th:if="${member.grade2==4}" th:value="总监" autocomplete="off" readonly/>
+							<input class="form-control pull-left" type="text" name="grade2" th:if="${member.grade2==5}" th:value="总裁" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">回馈积分：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="giveScore" name="giveScore" th:value="*{giveScore}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">服务积分：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="serviceScore" name="serviceScore" th:value="*{serviceScore}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">购物积分：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="consumeScore" name="consumeScore" th:value="*{consumeScore}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">可提现积分：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="cashoutScore" name="cashoutScore" th:value="*{cashoutScore}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">来源：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="comeFrom" name="comeFrom" th:value="*{comeFrom}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">注册二维码：</label>
+						<div class="col-sm-10">
+							<img id="qrCode" th:src="*{qrCode}" class="qrCode" style="vertical-align: bottom;width:65px;height:65px;display: inline-block;">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label ">自身购买储值卡总额：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="selfScore" name="selfScore" th:value="*{selfScore}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">上级账号：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="puserAccount" name="puserAccount" th:value="${member.member==null?'':(member.member.userAccount==null?'':member.member.userAccount)}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">上级昵称：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="puserNick" name="puserNick" th:value="${member.member==null?'':(member.member.userNick==null?'':member.member.userNick)}" autocomplete="off" readonly/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label is-required">上级真实姓名：</label>
+						<div class="col-sm-10">
+							<input class="form-control pull-left" type="text" id="ptrueName" name="ptrueName" th:value="${member.member==null?'':(member.member.trueName==null?'':member.member.trueName)}" autocomplete="off" readonly/>
+						</div>
+					</div>
+				</div>
+		</form>
+	</div>
+
+	<th:block th:include="include :: footer" />
+
+</body>
+</html>
